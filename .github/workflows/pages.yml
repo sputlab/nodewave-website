@@ -1,0 +1,51 @@
+name: Website
+
+# Publishes the site to GitHub Pages (nodewave.org). Settings -> Pages -> Source must be "GitHub Actions".
+# The numbers bar on the home page (stats.json) is computed from the app repository.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: sputlab/nodewave
+          path: app
+          fetch-depth: 0
+      - name: Numbers for the home page
+        working-directory: app
+        run: |
+          printf '{"since":"%s","releases":%s,"tests":%s}\n' \
+            "$(git log --reverse --format=%cs | head -1)" \
+            "$(git tag --list 'v*' | wc -l | tr -d ' ')" \
+            "$(grep -rh '@Test' app/src/test | wc -l | tr -d ' ')" > ../stats.json
+          cat ../stats.json
+      - name: Assemble the site
+        run: |
+          mkdir _site
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'app' --exclude '_site' ./ _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
