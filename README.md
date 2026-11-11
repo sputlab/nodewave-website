@@ -3,6 +3,7 @@
 Static presentation site (plain HTML and CSS, no build step). `.github/workflows/pages.yml` publishes the repository to GitHub Pages on every push to `main` (and daily, to refresh the numbers bar from the app repository); the setting is *Settings -> Pages -> Build and deployment -> Source: GitHub Actions*. The app lives in [sputlab/nodewave](https://github.com/sputlab/nodewave); project documents and the changelog are there.
 
 - `index.html`: the home page (hero, screenshot carousel, features, timeline, security, download)
+- `support.html`: ways to support the project (devices, tests, word of mouth, community, donations)
 - `donate.html`: PayPal donation page, adapted from sputlab.com/donate (no donor list: that needs a server)
 - `test-report.html`: the test list and report form; the report is composed in the browser and sent with a `mailto:` link to testreport@nodewave.org (the site has no server), with copy and download as fallbacks
 - `style.css`, `site.js`: shared styles and the carousel / timeline scripts (`?reveal=all` shows every timeline item at once, for previews)
