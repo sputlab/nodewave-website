@@ -296,3 +296,27 @@ details.group .body{padding:4px 20px 18px}
 .tag{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid}
 .tag.in{color:var(--green);border-color:var(--green)}
 .tag.out{color:var(--amber);border-color:var(--amber)}
+
+/* filters, device list, blog */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filters input,.filters select{background:var(--surface);color:var(--text);border:1px solid var(--line2);border-radius:12px;padding:10px 14px;font:inherit;font-size:15px;min-width:0}
+.filters input{flex:1 1 220px}
+.filters input:focus,.filters select:focus{outline:2px solid var(--green);outline-offset:1px}
+.filters select option{background:#0b1316;color:var(--text)}
+.devlist{list-style:none;margin:0;padding:0}
+.devlist li{display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:6px 24px;padding:14px 0;border-top:1px solid var(--line)}
+.devlist .dname strong{display:block;font-size:16px}
+.devlist .meta{color:var(--green);font:12px var(--mono);letter-spacing:.04em}
+.devlist p{margin:0;color:var(--dim);font-size:14px}
+.devlist .empty{display:block;color:var(--dim);text-align:center;padding:22px 0}
+@media(max-width:640px){.devlist li{grid-template-columns:1fr}}
+.post{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:26px;margin-bottom:20px;max-width:760px}
+.post h2{margin:0 0 12px;font-size:24px}
+.post h2 a{color:var(--text)}
+.post h3{margin:20px 0 6px}
+.post p,.post li{color:var(--dim);font-size:16px}
+.post .pdate{font:600 12px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin:0 0 8px}
+.post figure{margin:16px 0}
+.post img{max-width:100%;height:auto;border-radius:14px;border:1px solid var(--line)}
+.post figcaption{color:var(--faint);font-size:13px;margin-top:6px}
+#posts .empty{color:var(--dim)}

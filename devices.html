@@ -14,7 +14,7 @@
 <header class="top"><div class="wrap">
   <a class="brand" href="./"><img src="images/icon.png" alt="">NODEWAVE</a>
   <nav class="nav" id="mainnav">
-    <a href="./#screens">Screens</a><a href="./#features">Features</a><a href="./#timeline">Timeline</a><a href="./#get">Get it</a><a href="devices.html" aria-current="page">Devices</a><a href="test-report.html">Test report</a>
+    <a href="./#screens">Screens</a><a href="./#features">Features</a><a href="./#timeline">Timeline</a><a href="./#get">Get it</a><a href="blog.html">Blog</a>
     <a class="btn amber small" href="support.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>Support</a>
   </nav>
   <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><span></span><span></span><span></span></button>
@@ -27,11 +27,16 @@
     <p class="lead">NodeWave is developed and checked on these four phones, which cover Android 10 to 14 and four different manufacturer skins. Every release is installed on them and the radio, the encryption, relaying, voice and photos are exercised on real hardware before it is published.</p>
   </div>
 
-  <div class="grid devices">
-    <div class="card"><h3>Honor View 10</h3><p class="meta">BKL-L09 · Android 10 · EMUI 10</p><p>Bluetooth 5.0. The strictest of the four: EMUI freezes background apps when the screen is off, so set the battery option <em>App launch → Manage manually</em> for NodeWave.</p></div>
-    <div class="card"><h3>Xiaomi Mi Note 10</h3><p class="meta">Android 11 · MIUI</p><p>Reliable with the screen off. Needs location on for scanning (Android 11) and "Install via USB" allowed to sideload from a computer.</p></div>
-    <div class="card"><h3>Sony Xperia</h3><p class="meta">XQ-AS52 · Android 12 · near-stock</p><p>The first phone with the new Bluetooth permissions (scan, advertise, connect) and no location requirement.</p></div>
-    <div class="card"><h3>Samsung Galaxy A52</h3><p class="meta">SM-A525F · Android 14 · One UI</p><p>Reference for current Android: nearby-devices permission for Wi-Fi Direct, photo picker and camera.</p></div>
+  <div class="panel">
+    <h2>Phones tested so far</h2>
+    <p class="hint2">Search by name or code, or filter by manufacturer and Android version. Reports from the community appear here as they are verified.</p>
+    <div class="filters">
+      <input type="search" id="q" placeholder="Search model, code, notes..." aria-label="Search devices">
+      <select id="fb" aria-label="Manufacturer"><option value="">All manufacturers</option></select>
+      <select id="fa" aria-label="Android version"><option value="">All Android versions</option></select>
+    </div>
+    <p class="fine" id="count" aria-live="polite" style="margin:0 0 8px"></p>
+    <ul class="devlist" id="devlist"></ul>
   </div>
 
   <div class="panel" style="margin-top:28px">
@@ -50,13 +55,41 @@
     <h3>Is your phone not on the list?</h3>
     <p class="hint2">Behaviour of the Bluetooth stack differs a lot between models. A short test with two phones tells us (and the next person) whether yours works.</p>
     <a class="btn primary" href="test-report.html">Fill in a test report</a>
+    <h3 style="margin-top:26px">Or offer us a phone</h3>
+    <p class="hint2">Can't test yourself? If you have an Android phone you no longer use, you can lend or give it to the project: every new model we can hold in our hands means fewer surprises for everyone. <a href="support.html">See how to offer a device</a>.</p>
   </div>
 </main>
 
 <footer><div class="wrap">
   <div>NodeWave is free software under the <a href="https://github.com/sputlab/nodewave/blob/main/LICENSE">AGPL-3.0-or-later</a> licence.</div>
-  <div class="links"><a href="./">Home</a><a href="https://github.com/sputlab/nodewave">GitHub</a><a href="test-report.html">Test report</a><a href="support.html">Support</a><a href="transparency.html">Transparency</a><a href="https://sputlab.com">Sputlab</a></div>
+  <div class="links"><a href="./">Home</a><a href="https://github.com/sputlab/nodewave">GitHub</a><a href="test-report.html">Test report</a><a href="blog.html">Blog</a><a href="support.html">Support</a><a href="transparency.html">Transparency</a><a href="https://sputlab.com">Sputlab</a></div>
 </div></footer>
+<script>
+(function () {
+  var list = document.getElementById('devlist'), q = document.getElementById('q'), fb = document.getElementById('fb'), fa = document.getElementById('fa'), count = document.getElementById('count');
+  var devices = [];
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+  function fill(sel, vals) { vals.forEach(function (v) { var o = document.createElement('option'); o.value = v; o.textContent = sel === fa ? 'Android ' + v : v; sel.appendChild(o); }); }
+  function render() {
+    var term = q.value.trim().toLowerCase(), b = fb.value, a = fa.value;
+    var shown = devices.filter(function (x) {
+      return (!b || x.brand === b) && (!a || String(x.android) === a) &&
+        (!term || [x.brand, x.model, x.code, x.skin, x.notes, 'android ' + x.android].join(' ').toLowerCase().indexOf(term) > -1);
+    });
+    count.textContent = shown.length + ' of ' + devices.length + ' devices';
+    list.innerHTML = shown.length ? shown.map(function (x) {
+      return '<li><div class="dname"><strong>' + esc(x.brand + ' ' + x.model) + '</strong><span class="meta">' + esc([x.code, 'Android ' + x.android, x.skin].filter(Boolean).join(' · ')) + '</span></div><p>' + esc(x.notes) + '</p></li>';
+    }).join('') : '<li class="empty">No device matches. <a href="test-report.html">Test yours</a> and tell us how it went.</li>';
+  }
+  fetch('devices.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
+    devices = (d.devices || []).slice().sort(function (x, y) { return (x.brand + x.model).localeCompare(y.brand + y.model); });
+    fill(fb, devices.map(function (x) { return x.brand; }).filter(function (v, i, a) { return a.indexOf(v) === i; }).sort());
+    fill(fa, devices.map(function (x) { return x.android; }).filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (x, y) { return y - x; }));
+    render();
+  }).catch(function () { list.innerHTML = '<li class="empty">The list could not be loaded. Open <a href="devices.json">devices.json</a> directly.</li>'; });
+  [q, fb, fa].forEach(function (el) { el.addEventListener('input', render); });
+})();
+</script>
 <script src="site.js"></script>
 </body>
 </html>

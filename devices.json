@@ -1,0 +1,40 @@
+{
+  "devices": [
+    {
+      "brand": "Honor",
+      "model": "View 10",
+      "code": "BKL-L09",
+      "android": 10,
+      "skin": "EMUI 10",
+      "tester": "Project",
+      "notes": "Bluetooth 5.0. The strictest of the four: EMUI freezes background apps when the screen is off, so set the battery option App launch -> Manage manually for NodeWave."
+    },
+    {
+      "brand": "Xiaomi",
+      "model": "Mi Note 10",
+      "code": "",
+      "android": 11,
+      "skin": "MIUI",
+      "tester": "Project",
+      "notes": "Reliable with the screen off. Needs location on for scanning (Android 11) and \"Install via USB\" allowed to sideload from a computer."
+    },
+    {
+      "brand": "Sony",
+      "model": "Xperia",
+      "code": "XQ-AS52",
+      "android": 12,
+      "skin": "Near-stock",
+      "tester": "Project",
+      "notes": "The first phone with the new Bluetooth permissions (scan, advertise, connect) and no location requirement."
+    },
+    {
+      "brand": "Samsung",
+      "model": "Galaxy A52",
+      "code": "SM-A525F",
+      "android": 14,
+      "skin": "One UI",
+      "tester": "Project",
+      "notes": "Reference for current Android: nearby-devices permission for Wi-Fi Direct, photo picker and camera."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "posts": [
+    {
+      "id": "welcome",
+      "date": "2026-11-12",
+      "title": "Welcome to the NodeWave blog",
+      "body": [
+        "Here we will post release notes, test results and stories from people using NodeWave where there is no signal.",
+        "Want to help? See [how to support the project](support.html), or fill in a [test report](test-report.html)."
+      ]
+    }
+  ]
+}

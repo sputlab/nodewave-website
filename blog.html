@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog - NodeWave</title>
+<meta name="description" content="News, release notes and field stories from the NodeWave project.">
+<meta name="theme-color" content="#04080a">
+<link rel="canonical" href="https://nodewave.org/blog.html">
+<link rel="icon" href="images/icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./"><img src="images/icon.png" alt="">NODEWAVE</a>
+  <nav class="nav" id="mainnav">
+    <a href="./#screens">Screens</a><a href="./#features">Features</a><a href="./#timeline">Timeline</a><a href="./#get">Get it</a><a href="blog.html" aria-current="page">Blog</a>
+    <a class="btn amber small" href="support.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>Support</a>
+  </nav>
+  <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><span></span><span></span><span></span></button>
+</div></header>
+
+<main class="wrap">
+  <div class="pagehead">
+    <p class="eyebrow">Blog</p>
+    <h1>News from the mesh</h1>
+    <p class="lead">Release notes, test results and stories from the project.</p>
+  </div>
+  <div class="filters"><input type="search" id="bq" placeholder="Search posts..." aria-label="Search posts"></div>
+  <div id="posts"><p class="empty">Loading...</p></div>
+</main>
+</main>
+
+<footer><div class="wrap">
+  <div>NodeWave is free software under the <a href="https://github.com/sputlab/nodewave/blob/main/LICENSE">AGPL-3.0-or-later</a> licence.</div>
+  <div class="links"><a href="./">Home</a><a href="https://github.com/sputlab/nodewave">GitHub</a><a href="devices.html">Devices</a><a href="test-report.html">Test report</a><a href="blog.html">Blog</a><a href="support.html">Support</a><a href="transparency.html">Transparency</a><a href="https://sputlab.com">Sputlab</a></div>
+</div></footer>
+
+<script>
+(function () {
+  var box = document.getElementById('posts'), bq = document.getElementById('bq'), posts = [];
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+  function safeUrl(u) { return /^(https?:|mailto:|[\w./#?=&%-]+$)/i.test(u) ? u : '#'; }
+  // text with [label](url) links, **bold** and *italic*; everything else is escaped
+  function inline(t) {
+    var out = '', re = /\[([^\]]+)\]\(([^)\s]+)\)/g, last = 0, m;
+    function fmt(x) { return esc(x).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>'); }
+    while ((m = re.exec(t))) { out += fmt(t.slice(last, m.index)) + '<a href="' + esc(safeUrl(m[2])) + '">' + esc(m[1]) + '</a>'; last = re.lastIndex; }
+    return out + fmt(t.slice(last));
+  }
+  function block(b) {
+    if (typeof b === 'string') return '<p>' + inline(b) + '</p>';
+    if (b.img) return '<figure><img src="' + esc(safeUrl(b.img)) + '" alt="' + esc(b.alt || '') + '" loading="lazy">' + (b.caption ? '<figcaption>' + inline(b.caption) + '</figcaption>' : '') + '</figure>';
+    if (b.heading) return '<h3>' + esc(b.heading) + '</h3>';
+    if (b.list) return '<ul>' + b.list.map(function (i) { return '<li>' + inline(i) + '</li>'; }).join('') + '</ul>';
+    return '';
+  }
+  function plain(p) { return (p.title + ' ' + p.body.map(function (b) { return typeof b === 'string' ? b : (b.caption || b.heading || (b.list || []).join(' ')); }).join(' ')).toLowerCase(); }
+  function render() {
+    var term = bq.value.trim().toLowerCase(), shown = posts.filter(function (p) { return !term || plain(p).indexOf(term) > -1; });
+    box.innerHTML = shown.length ? shown.map(function (p) {
+      return '<article class="post" id="' + esc(p.id) + '"><p class="pdate">' + esc(p.date) + '</p><h2><a href="#' + esc(p.id) + '">' + esc(p.title) + '</a></h2>' + p.body.map(block).join('') + '</article>';
+    }).join('') : '<p class="empty">' + (posts.length ? 'No post matches your search.' : 'No posts yet.') + '</p>';
+    if (location.hash && !term) { var el = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (el) el.scrollIntoView(); }
+  }
+  fetch('posts.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
+    posts = (d.posts || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+    render();
+  }).catch(function () { box.innerHTML = '<p class="empty">The posts could not be loaded. Open <a href="posts.json">posts.json</a> directly.</p>'; });
+  bq.addEventListener('input', render);
+})();
+</script>
+<script src="site.js"></script>
+</body>
+</html>

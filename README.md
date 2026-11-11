@@ -5,7 +5,8 @@ The site of [nodewave.org](https://nodewave.org): plain HTML, CSS and a little J
 ## Pages and files
 
 - `index.html`: home page (hero, numbers bar, screenshot carousel, features, timeline, security, download)
-- `devices.html`: the phones NodeWave is tested on, what has been verified, and what has not
+- `devices.html` + `devices.json`: searchable, filterable list of the tested phones (format below), what has been verified, and what has not; also where to offer a phone
+- `blog.html` + `posts.json`: the blog (format below)
 - `test-report.html`: the test list and the report form. The report is composed in the browser and sent with a `mailto:` link to testreport@nodewave.org (the site has no server), with copy and download as fallbacks
 - `support.html`: ways to support the project, as accordions (lend devices, run tests, report problems, spread the word, join communities, contribute code, donate)
 - `donate.html`: PayPal donation page, adapted from sputlab.com/donate (no donor list: that would need a server)
@@ -16,7 +17,7 @@ The site of [nodewave.org](https://nodewave.org): plain HTML, CSS and a little J
 - `CNAME`: the custom domain `nodewave.org` (GitHub Pages reads it from here)
 - `.nojekyll`: serve the files as they are
 
-The header (menu with the Support button) and the footer links are repeated in every HTML page. When you add or rename a page, update them in all pages.
+The top menu holds Screens, Features, Timeline, Get it, Blog and the Support button; Devices and Test report are reached from the footer, the home page and the Support page. The header and the footer links are repeated in every HTML page. When you add or rename a page, update them in all pages.
 
 ## Run it locally
 
@@ -24,7 +25,7 @@ The header (menu with the Support button) and the footer links are repeated in e
 python3 -m http.server
 ```
 
-then open http://localhost:8000. Use a local server rather than opening the files directly: `transparency.json` and `stats.json` are loaded with `fetch`, which browsers block on `file://`.
+then open http://localhost:8000. Use a local server rather than opening the files directly: `transparency.json`, `devices.json`, `posts.json` and `stats.json` are loaded with `fetch`, which browsers block on `file://`.
 
 ## Publishing
 
@@ -70,6 +71,36 @@ Edit `transparency.json` and commit; the page recomputes the totals itself. Ever
 | `usedFor` | yes | what it is used for |
 
 The JSON must stay valid (no trailing commas, double quotes only). If it does not parse, the page shows an error pointing to the raw file.
+
+## Adding a tested device
+
+Add an object to the `devices` array of `devices.json`; the list sorts itself and the filters are built from the values present.
+
+```json
+{ "brand": "Google", "model": "Pixel 6", "code": "GB7N6", "android": 14, "skin": "Stock", "tester": "Community", "notes": "Works with the screen off." }
+```
+
+`brand`, `model`, `android` (a number) and `notes` are shown and searched; `code` and `skin` are optional (use `""` when unknown); `tester` is for the record ("Project" or "Community").
+
+## Writing a blog post
+
+Add an object to the `posts` array of `posts.json` (newest first is not required, the page sorts by date). Each post has a unique `id` (used for the link `blog.html#id`), a `date` (`YYYY-MM-DD`), a `title` and a `body`, a list of blocks:
+
+```json
+{
+  "id": "release-0-13",
+  "date": "2026-11-20",
+  "title": "NodeWave 0.13",
+  "body": [
+    "A paragraph. It can contain a [link](https://nodewave.org), **bold** and *italic* text.",
+    { "heading": "What is new" },
+    { "list": ["First item", "Second item with a [link](support.html)"] },
+    { "img": "assets/screens/map.png", "alt": "The offline map", "caption": "Optional caption, links allowed." }
+  ]
+}
+```
+
+A block is a plain string (paragraph), `{"heading": ...}`, `{"list": [...]}` or `{"img": path, "alt": ..., "caption": ...}`. Images go in `assets/` and are referenced by relative path. HTML is not interpreted: anything that is not the markup above is shown as plain text. Only `http(s):`, `mailto:` and relative links are accepted.
 
 ## Keeping it in step with the app
 
