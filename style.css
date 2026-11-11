@@ -269,3 +269,30 @@ details.group .body{padding:4px 20px 18px}
 .ticks li{position:relative;padding:6px 0 6px 26px;color:var(--dim);font-size:15px}
 .ticks li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
 .nav a[aria-current="page"]:not(.btn){color:var(--text)}
+
+/* accordion (support page) */
+.acc{display:flex;flex-direction:column;gap:10px}
+.acc details{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);transition:border-color .25s,background .25s}
+.acc details[open]{border-color:var(--line2);background:var(--surface2)}
+.acc summary{cursor:pointer;list-style:none;padding:18px 54px 18px 22px;font-weight:650;font-size:17px;position:relative}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";position:absolute;right:22px;top:50%;width:9px;height:9px;border-right:2px solid var(--green);border-bottom:2px solid var(--green);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
+.acc details[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+.acc summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:var(--radius)}
+.acc .accbody{padding:0 22px 20px}
+.acc .accbody p{margin:0;color:var(--dim);font-size:15px}
+
+/* transparency page */
+.tsum{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.tsum div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px}
+.tsum .k{display:block;font:600 12px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.tsum b{font-size:26px;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+.ledger{width:100%;border-collapse:collapse;font-size:14px}
+.ledger th{text-align:left;font:600 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:8px 10px;border-bottom:1px solid var(--line2)}
+.ledger td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--text)}
+.ledger .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ledger .empty{color:var(--dim);text-align:center;padding:22px}
+.tag{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid}
+.tag.in{color:var(--green);border-color:var(--green)}
+.tag.out{color:var(--amber);border-color:var(--amber)}

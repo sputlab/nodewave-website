@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transparency - NodeWave</title>
+<meta name="description" content="Every donation, contribution and expense of the NodeWave project, recorded publicly.">
+<meta name="theme-color" content="#04080a">
+<link rel="canonical" href="https://nodewave.org/transparency.html">
+<link rel="icon" href="images/icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./"><img src="images/icon.png" alt="">NODEWAVE</a>
+  <nav class="nav" id="mainnav">
+    <a href="./#screens">Screens</a><a href="./#features">Features</a><a href="./#timeline">Timeline</a><a href="./#get">Get it</a><a href="devices.html">Devices</a><a href="test-report.html">Test report</a>
+    <a class="btn amber small" href="support.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>Support</a>
+  </nav>
+  <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><span></span><span></span><span></span></button>
+</div></header>
+
+<main class="wrap">
+  <div class="pagehead">
+    <p class="eyebrow">Transparency</p>
+    <h1>Where every euro goes</h1>
+    <p class="lead">NodeWave runs on donations and on the time and hardware of its contributors. This page records everything that comes in and everything that is spent, so anyone can check that the money is used for the project and nothing else.</p>
+  </div>
+
+  <div class="tsum" id="sum" aria-live="polite">
+    <div><span class="k">Received</span><b id="tin">-</b></div>
+    <div><span class="k">Spent</span><b id="tout">-</b></div>
+    <div><span class="k">Balance</span><b id="tbal">-</b></div>
+  </div>
+
+  <div class="panel">
+    <h2>Money received and spent</h2>
+    <p class="hint2">Amounts in euro, newest first. Donations are listed without the donor's name unless they ask to be mentioned.</p>
+    <div class="tablewrap"><table class="ledger">
+      <thead><tr><th>Date</th><th>Type</th><th>Description</th><th class="num">Amount</th></tr></thead>
+      <tbody id="money"><tr><td colspan="4" class="empty">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div class="panel">
+    <h2>Contributions in kind</h2>
+    <p class="hint2">Devices, hardware, services and time given to the project, with the person's permission to be named.</p>
+    <div class="tablewrap"><table class="ledger">
+      <thead><tr><th>Date</th><th>What</th><th>From</th><th>Used for</th></tr></thead>
+      <tbody id="kind"><tr><td colspan="4" class="empty">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div class="panel">
+    <h3>How this is kept</h3>
+    <ul class="ticks">
+      <li>The list is the file <a href="transparency.json">transparency.json</a> in the website repository, so every change is public in the <a href="https://github.com/sputlab/nodewave-website/commits/main/transparency.json">Git history</a>.</li>
+      <li>Each donation received through PayPal is added, with the fee shown as an expense.</li>
+      <li>Expenses are only for the project: test phones, radio boards, hosting, domain and similar costs.</li>
+      <li>Questions or corrections: open an <a href="https://github.com/sputlab/nodewave/issues">issue</a>.</li>
+    </ul>
+    <p class="fine">Want to help? See <a href="support.html">all the ways to support NodeWave</a>.</p>
+  </div>
+</main>
+
+
+<footer><div class="wrap">
+  <div>NodeWave is free software under the <a href="https://github.com/sputlab/nodewave/blob/main/LICENSE">AGPL-3.0-or-later</a> licence.</div>
+  <div class="links"><a href="./">Home</a><a href="https://github.com/sputlab/nodewave">GitHub</a><a href="devices.html">Devices</a><a href="test-report.html">Test report</a><a href="support.html">Support</a><a href="https://sputlab.com">Sputlab</a></div>
+</div></footer>
+
+<script>
+(function () {
+  function eur(n) { return n.toLocaleString('en-GB', { style: 'currency', currency: 'EUR' }); }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+  function empty(id, cols, msg) { document.getElementById(id).innerHTML = '<tr><td colspan="' + cols + '" class="empty">' + msg + '</td></tr>'; }
+  function byDate(a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; }
+  fetch('transparency.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
+    var money = (d.money || []).slice().sort(byDate), kind = (d.inKind || []).slice().sort(byDate), tin = 0, tout = 0;
+    money.forEach(function (e) { if (e.type === 'in') tin += e.amount; else tout += e.amount; });
+    document.getElementById('tin').textContent = eur(tin);
+    document.getElementById('tout').textContent = eur(tout);
+    document.getElementById('tbal').textContent = eur(tin - tout);
+    if (!money.length) empty('money', 4, 'No entries yet.');
+    else document.getElementById('money').innerHTML = money.map(function (e) {
+      var out = e.type !== 'in';
+      return '<tr><td>' + esc(e.date) + '</td><td><span class="tag ' + (out ? 'out' : 'in') + '">' + (out ? 'Expense' : 'Received') + '</span></td><td>' + esc(e.description) +
+        (e.url ? ' <a href="' + esc(e.url) + '">proof</a>' : '') + '</td><td class="num">' + (out ? '-' : '+') + eur(e.amount) + '</td></tr>';
+    }).join('');
+    if (!kind.length) empty('kind', 4, 'No entries yet.');
+    else document.getElementById('kind').innerHTML = kind.map(function (e) {
+      return '<tr><td>' + esc(e.date) + '</td><td>' + esc(e.what) + '</td><td>' + esc(e.from) + '</td><td>' + esc(e.usedFor) + '</td></tr>';
+    }).join('');
+  }).catch(function () {
+    empty('money', 4, 'The list could not be loaded. Open <a href="transparency.json">transparency.json</a> directly.');
+    empty('kind', 4, '');
+  });
+})();
+</script>
+<script src="site.js"></script>
+</body>
+</html>
