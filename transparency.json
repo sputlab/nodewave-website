@@ -1,5 +1,15 @@
 {
   "currency": "EUR",
-  "money": [],
-  "inKind": []
+  "money": [
+    { "date": "2026-11-12", "type": "out", "description": "Development board ESP32 LoRa V4 + GNSS L76 module+ 3000mAh battery", "amount": 50.24 },
+    { "date": "2026-11-12", "type": "out", "description": "2 x USB-C to USB-A OTG Cable", "amount": 11.94 },
+    { "date": "2026-11-12", "type": "out", "description": "2 x Waveshare USB-TO-LoRa-HF, TCXO Crystal Oscillator", "amount": 49.99 },
+    { "date": "2026-11-04", "type": "out", "description": "Domain nodewave.org, 1 year", "amount": 7.92}
+  ],
+  "inKind": [
+    { "date": "2026-11-05", "what": "Samsung Galaxy A52", "from": "Disposed phone", "usedFor": "Android 14 testing" },
+    { "date": "2026-11-05", "what": "Samsung Galaxy A52", "from": "Disposed phone", "usedFor": "Android 14 testing" },
+    { "date": "2026-11-05", "what": "Wiko Y", "from": "Disposed phone", "usedFor": "Android 11 testing" }
+    
+  ]
 }
