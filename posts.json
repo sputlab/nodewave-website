@@ -9,5 +9,40 @@
         "Want to help? See [how to support the project](support.html), or fill in a [test report](test-report.html)."
       ]
     }
+        {
+      "id": "how-i-built-nodewave",
+      "date": "2026-11-12",
+      "title": "How I Built NodeWave in a Weekend (Without Writing a Single Line of Code)",
+      "body": [
+        "**How I Built NodeWave in a Weekend (Without Writing a Single Line of Code)**
+
+If you browse this site and look at the app, your first thought might be: "Okay, just another open-source project built by a developer over months of grinding in Android Studio."
+
+The reality is a bit different. I didn't write the code by hand.
+
+NodeWave is a 100% vibe-coding experiment, from the Android app right down to this very landing page. I didn't spend years studying Java or Kotlin syntax. Instead, I focused entirely on the system architecture and the logic, using AI as my development team to handle the raw syntax while I acted as the project architect.
+
+**From the Idea to the Execution**
+It all started with a real need: I wanted a simple, lightweight off-grid communication system to let phones talk to each other without relying on the internet.
+
+Usually, for a solo creator, an idea like this faces a massive bottleneck: spending months trying to master the quirks of the Bluetooth Low Energy stack before even building the core features. I decided to bypass that barrier. I made a bet: what if I focused strictly on the problem-solving and the user experience, and let the AI write the actual codebase?
+
+**Building an App as an Architect, Not a Typist**
+Don't believe anyone who tells you that you can just type "make me a mesh app" and magically get a finished product. Building software this way requires a deep understanding of logic and relentless testing:
+
+1. **System-Level Problem Solving:** Instead of fighting with an IDE, I focused on real-world behavior. If I noticed that when Phone A moved out of range and came back, the Bluetooth handshake failed to reconnect, I didn't just ask for magic. I explained the exact physical scenario to the AI, and we iterated on the logic until the connection held up in the field.
+2. **Rapid-Fire Debugging:** When the app crashed, I extracted the stack traces, fed the logs to the AI, and worked through the bottlenecks together. It’s a process of analyzing errors and deploying targeted patches at lightning speed.
+3. **Vision Over Syntax:** The AI is incredibly fast at writing code, but it has no common sense. The critical thinking, the mesh logic, the clean UI, and the overall simplicity... that has to come from you. You are the pilot; the AI is just the engine.
+
+**What Will the Community Think?**
+I know that in the open-source world, some traditionalists might be skeptical of an AI-generated codebase. It challenges the old way of doing things.
+
+But for me, the result is what ultimately matters. NodeWave was born because a tool like this was needed, and AI allowed me to bridge the gap between a useful idea and a functioning, downloadable reality that anyone can use today. The repository is completely public and open: if a seasoned developer wants to dive in, optimize the architecture, or contribute, the door is wide open!
+
+If this is the future of building—a world where anyone with a clear vision and a solid grasp of logic can build real software without needing to memorize syntax—I'm absolutely here for it.
+
+Oh, and by the way: if you try the app in the field and run into any bugs, please open an issue on GitHub. I'll fire up my AI workspace, analyze the logs, and we'll push a fix! 🚀"
+      ]
+    }
   ]
 }
