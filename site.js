@@ -155,3 +155,17 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
   window.addEventListener('resize', function () { if (window.innerWidth > 760) set(false); });
 })();
+
+// ---------- light / dark theme ----------
+// The head of every page applies a saved choice before the first paint; without one the system setting decides (see style.css).
+(function () {
+  var b = document.getElementById('themebtn'), root = document.documentElement;
+  if (!b) return;
+  var mq = window.matchMedia && matchMedia('(prefers-color-scheme: dark)');
+  function dark() { var t = root.getAttribute('data-theme'); return t ? t === 'dark' : !!(mq && mq.matches); }
+  b.addEventListener('click', function () {
+    var next = dark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('nw-theme', next); } catch (e) {}
+  });
+})();
