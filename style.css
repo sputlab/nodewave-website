@@ -99,7 +99,7 @@ pre{padding:16px;overflow:auto;font-size:14px}
 
 /* ---- gallery ---- */
 .gallery{position:relative;margin:0 -22px}
-.track{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 22px 34px;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab}
+.track{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px calc(50% - min(118px,30vw)) 34px;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab}
 .track::-webkit-scrollbar{display:none}
 .track.drag{cursor:grabbing;scroll-snap-type:none}
 .shot{flex:0 0 auto;width:min(236px,60vw);scroll-snap-align:center;margin:0;transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s,filter .35s;transform:scale(var(--s,.92));opacity:var(--o,.6);filter:saturate(var(--f,.8))}
