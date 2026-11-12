@@ -1,26 +1,18 @@
-/* NodeWave site: one stylesheet for every page. Dark tactical, quiet motion, respects prefers-reduced-motion. */
+/* NodeWave site: one stylesheet for every page. Deliberately plain: light page, system fonts, one link colour, no effects. */
 :root{
-  --bg:#04080a;--bg2:#070d10;--surface:rgba(255,255,255,.035);--surface2:rgba(255,255,255,.06);
-  --line:rgba(160,255,190,.12);--line2:rgba(160,255,190,.22);
-  --text:#e2f0e7;--dim:#8ba597;--faint:#5d7568;
-  --green:#39ff14;--green2:#7dff5e;--cyan:#2fd6ff;--amber:#ffb000;--red:#ff5a5a;
+  --bg:#fdfdfb;--bg2:#f3f3ee;--surface:#fff;--surface2:#f8f8f4;
+  --line:#dcdcd4;--line2:#bdbdb2;
+  --text:#222;--dim:#555;--faint:#777;
+  --green:#0b57a4;--green2:#0b57a4;--cyan:#0b57a4;--amber:#8a5a00;--red:#b00020;
+  --ok:#1a7f37;--warn:#8a5a00;--bad:#b00020;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --radius:18px;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --radius:6px;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{scroll-behavior:smooth;scroll-padding-top:76px}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body::before{ /* soft glow and a faint grid behind everything */
-  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:
-    radial-gradient(900px 500px at 15% -10%,rgba(57,255,20,.10),transparent 60%),
-    radial-gradient(800px 500px at 100% 10%,rgba(47,214,255,.08),transparent 60%),
-    linear-gradient(rgba(160,255,190,.035) 1px,transparent 1px) 0 0/48px 48px,
-    linear-gradient(90deg,rgba(160,255,190,.035) 1px,transparent 1px) 0 0/48px 48px;
-  mask-image:linear-gradient(#000 30%,transparent 95%);
-}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 var(--sans);overflow-x:hidden}
 a{color:var(--green);text-decoration:none}
 a:hover{text-decoration:underline}
 img{max-width:100%}
@@ -320,3 +312,105 @@ details.group .body{padding:4px 20px 18px}
 .post img{max-width:100%;height:auto;border-radius:14px;border:1px solid var(--line)}
 .post figcaption{color:var(--faint);font-size:13px;margin-top:6px}
 #posts .empty{color:var(--dim)}
+
+/* ---- plain theme: flattens what is above (no glow, gradients, blur or motion) ---- */
+html{scroll-behavior:auto}
+a{text-decoration:underline}
+.top{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}
+.brand{color:var(--text);font:700 17px var(--sans);letter-spacing:0}
+.brand img{box-shadow:none;border-radius:6px}
+.brand:hover{text-decoration:none}
+.nav a{color:var(--text);text-decoration:none}
+.nav a:hover{text-decoration:underline}
+.nav a[aria-current="page"]:not(.btn){font-weight:700}
+.nav .btn{border:1px solid var(--line2);border-radius:4px;background:var(--surface)}
+.burger{background:var(--surface);border-radius:4px}
+.burger span{background:var(--text)}
+@media(max-width:760px){.nav{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}}
+.btn,.btn.primary,.btn.amber,.btn.amber.solid{border-radius:4px;border:1px solid var(--line2);background:var(--surface);color:var(--text);font-weight:600;transition:none;text-decoration:none}
+.btn:hover,.btn.amber:hover{transform:none;box-shadow:none;background:var(--bg2);text-decoration:none}
+.btn.primary,.btn.amber.solid{background:var(--green);border-color:var(--green);color:#fff}
+.btn.primary:hover,.btn.amber.solid:hover{background:#094a8a}
+.eyebrow,.kicker{font:600 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--faint);margin:0 0 6px}
+.hero{padding:48px 0 32px}
+.hero h1{font-size:clamp(28px,5vw,42px);line-height:1.15;letter-spacing:0}
+.hero h1 em{background:none;-webkit-background-clip:initial;background-clip:initial;color:inherit;font-style:normal}
+h2{letter-spacing:0;font-size:clamp(22px,3.4vw,30px)}
+.pagehead{padding:40px 0 18px}
+.pagehead h1{letter-spacing:0}
+section{padding:44px 0}
+.hero-art::before{display:none}
+.phone{width:min(240px,62vw);padding:5px;border-radius:18px;background:#e8e8e2;border:1px solid var(--line2);box-shadow:none}
+.phone::after{display:none}
+.phone img{border-radius:14px;background:#eee}
+.hero-art .phone{animation:none}
+.stats div{background:var(--bg2)}
+.stats b{font:700 24px var(--sans);color:var(--text)}
+.stats span{letter-spacing:0;text-transform:none}
+.card,.panel,.acc details,.post,.tsum div{backdrop-filter:none;box-shadow:none}
+.card{transition:none}
+.card:hover{transform:none;border-color:var(--line);background:var(--surface)}
+.panel,.post{border-radius:var(--radius)}
+.shot{transition:none}
+.shot.active{--s:1;--o:1}
+.fade{display:none}
+.arrow{background:var(--surface);color:var(--text);border-color:var(--line2);backdrop-filter:none;border-radius:4px}
+.arrow:hover{box-shadow:none;transform:none;background:var(--bg2)}
+.gallery:not(.touched) .arrow svg{animation:none!important}
+.gallery:not(.touched) .arrow::after{display:none!important}
+.dots button{background:var(--line2)}
+.dots button.on{background:var(--text);width:8px}
+.lightbox .x,.lightbox .arrow{color:#fff;background:transparent;border-color:#888}
+.lightbox p{color:#ddd}
+.lightbox img{border-radius:10px;box-shadow:none}
+.timeline::before{background:var(--line2);width:1px}
+.tl{opacity:1;transform:none;transition:none}
+.tl .dot{background:var(--bg);border:2px solid var(--text);box-shadow:none}
+.tl .ver{background:var(--bg2);border-color:var(--line2);color:var(--text);border-radius:4px}
+.tl.now .dot{background:var(--text);border-color:var(--text);animation:none;box-shadow:none}
+.tl.now .ver{background:var(--text);border-color:var(--text);color:#fff}
+.tl.future .dot{border:2px dashed var(--faint);box-shadow:none}
+.tl.future .ver,.tl.future .when,.tl.future h3{background:none;color:var(--dim)}
+.tl.future .ver{border-color:var(--line2);background:var(--bg2)}
+.phase span{background:var(--bg);border-radius:4px;letter-spacing:0;text-transform:none;font:600 13px var(--sans);color:var(--text)}
+.phase.f span{color:var(--dim);border-color:var(--line2)}
+.band{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius)}
+label.f input,label.f select,label.f textarea,.field,.test textarea.note{background:#fff;border-radius:4px}
+label.f input:focus,label.f select:focus,label.f textarea:focus,.field:focus,.test textarea.note:focus{box-shadow:none;outline:2px solid var(--green);outline-offset:1px}
+.auto{background:var(--bg2);border-color:var(--line2);color:var(--dim);border-radius:4px}
+.progress{background:var(--bg);backdrop-filter:none;border-radius:4px}
+.bar i{background:var(--green)}
+details.group{border-radius:var(--radius)}
+.res span{border-radius:4px;transition:none}
+.res input:checked+span.pass{background:#e3f4e8;border-color:var(--ok);color:var(--ok)}
+.res input:checked+span.fail{background:#fbe5e8;border-color:var(--bad);color:var(--bad)}
+.res input:checked+span.part{background:#fbf0d9;border-color:var(--warn);color:var(--warn)}
+.res input:checked+span.skip{background:var(--bg2);border-color:var(--dim);color:var(--text)}
+.res input:focus-visible+span{outline-color:var(--green)}
+.test .exp b{color:var(--dim)}
+.status.ok{color:var(--ok)}
+.status.warn{color:var(--warn)}
+.amounts button{border-radius:4px;transition:none}
+.amounts button:hover{transform:none}
+.amounts button.on{background:var(--bg2);border-color:var(--text);color:var(--text);box-shadow:none}
+.sliderrow input[type=range]{background:var(--line2)}
+.sliderrow input[type=range]::-webkit-slider-thumb{box-shadow:none;border-color:var(--green)}
+.sliderrow input[type=range]::-moz-range-thumb{border-color:var(--green)}
+.thanks{border-radius:var(--radius);background:var(--bg2);border-color:var(--line2)}
+.banner{background:#e3f4e8;border-color:var(--ok);border-radius:var(--radius)}
+.tag.in{color:var(--ok);border-color:var(--ok)}
+.tag.out{color:var(--warn);border-color:var(--warn)}
+.tag{border-radius:4px}
+.ticks li::before{color:var(--ok)}
+.filters input,.filters select{border-radius:4px;background:#fff}
+.filters select option{background:#fff;color:var(--text)}
+.devlist .meta{color:var(--dim)}
+.post .pdate{color:var(--faint);letter-spacing:0;text-transform:none;font:13px var(--sans)}
+.post h2 a{text-decoration:none}
+.post img{border-radius:4px}
+.acc summary::after{border-color:var(--text)}
+.ledger th,.tsum .k{letter-spacing:0;text-transform:none;font:600 13px var(--sans)}
+footer{background:var(--bg)}
+.prose{max-width:640px;margin-bottom:60px}
+.prose h2{margin:30px 0 8px}
+.prose p,.prose li{color:var(--text)}

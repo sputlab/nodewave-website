@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NodeWave - Off-Grid Mesh Communication System for Android</title>
 <meta name="description" content="NodeWave: phones talk to each other over Bluetooth Low Energy and Wi-Fi Direct, end-to-end encrypted, with voice, photos, groups and offline maps. No internet, no servers, no Google services. Open source, GPL-3.0.">
-<meta name="theme-color" content="#04080a">
+<meta name="theme-color" content="#fdfdfb">
 <link rel="canonical" href="https://nodewave.org/">
 <meta property="og:title" content="NodeWave - Off-Grid Mesh Communication System for Android">
 <meta property="og:description" content="Phones talk to each other over Bluetooth and Wi-Fi Direct, end-to-end encrypted, with no internet and no servers.">
@@ -19,7 +19,7 @@
 <header class="top"><div class="wrap">
   <a class="brand" href="./"><img src="images/icon.png" alt="">NODEWAVE</a>
   <nav class="nav" id="mainnav">
-    <a href="#screens">Screens</a><a href="#features">Features</a><a href="#timeline">Timeline</a><a href="#get">Get it</a><a href="blog.html">Blog</a>
+    <a href="#screens">Screens</a><a href="#features">Features</a><a href="#timeline">Timeline</a><a href="#get">Get it</a><a href="blog.html">Blog</a><a href="about.html">About</a>
     <a class="btn amber small" href="support.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>Support</a>
   </nav>
   <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><span></span><span></span><span></span></button>
@@ -29,9 +29,8 @@
 <div class="wrap">
   <div class="hero">
     <div>
-      <p class="eyebrow">Off-grid · open source</p>
-      <h1>Talk to anyone nearby. <em>No network needed.</em></h1>
-      <p class="lead">NodeWave turns Android phones into an Off-Grid Mesh Communication System. Messages, voice clips, photos and positions hop from phone to phone over Bluetooth, and jump to Wi-Fi Direct when something big has to move. End-to-end encrypted. No internet, no servers, no Google services.</p>
+            <h1>Chat with people nearby, without any network</h1>
+      <p class="lead">NodeWave is an Android app I am building so that phones can message each other with no internet, no mobile coverage and no servers. Messages, voice clips, photos and positions are passed from phone to phone over Bluetooth, and over Wi-Fi Direct for bigger files. Everything is end-to-end encrypted. It is a personal, open-source project and still pre-release, so expect rough edges. <a href="about.html">More about me and the project</a>.</p>
       <div class="cta">
         <a class="btn primary" href="https://github.com/sputlab/nodewave/releases"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>Download</a>
         <a class="btn" href="https://github.com/sputlab/nodewave">Source code</a>
@@ -55,8 +54,8 @@
 
 <section id="screens"><div class="wrap">
   <p class="kicker">In use</p>
-  <h2>Real phones, real radios</h2>
-  <p class="sub">Screenshots taken on phones talking to each other over Bluetooth, no network involved. The two nodes on the map are placed on a hiking trail for the picture. Drag, scroll, use the arrows, or tap a phone to enlarge it.</p>
+  <h2>Screenshots</h2>
+  <p class="sub">Taken on phones talking to each other over Bluetooth, with no network involved. The two nodes on the map are placed on a hiking trail just for the picture. Tap one to enlarge it.</p>
 
   <div class="gallery" aria-roledescription="carousel" aria-label="NodeWave screenshots">
     <div class="fade l"></div><div class="fade r"></div>
@@ -84,26 +83,25 @@
 </div></section>
 
 <section id="features"><div class="wrap">
-  <p class="kicker">What it does</p>
-  <h2>Built for when the network is gone</h2>
-  <p class="sub">Every phone is a node. There is nothing to sign up for and nothing in the middle that can read your messages or go down.</p>
+  <h2>What it does</h2>
+  <p class="sub">Every phone is a node. There is nothing to sign up for and no server in the middle.</p>
   <div class="grid">
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M7 11l10-4M7 13l10 4"/></svg></div><h3>Mesh relay</h3><p>Messages hop across intermediate phones to reach people out of direct range, with delivery receipts that travel back the same way.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Encrypted end to end</h3><p>Forward-secret session keys between each pair of nodes. Relays carry what they cannot read.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3m4 0v4h-4m-3-1v-3"/></svg></div><h3>Verified contacts</h3><p>Scan a QR code in person to confirm who a node ID belongs to; the key is then pinned.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><h3>Voice messages</h3><p>Hold the microphone and talk (up to 15 s). Opus over Bluetooth, Codec2 for slow links, resent if a chunk is lost.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5-5-7 8"/></svg></div><h3>Photos, fast</h3><p>A Wi-Fi Direct link that Bluetooth sets up by itself: about 120 KB in a third of a second, no confirmation to tap. Stripped of location data.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 15c3 0 6 1.5 6 4.5"/></svg></div><h3>Group chat</h3><p>Up to 8 people, sealed separately for every member, managed by an admin.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4l-6 2v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg></div><h3>Offline maps</h3><p>A vector Mapsforge file for a whole country, downloaded once. See where everyone is, with no connection.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9M12 7a5 5 0 1 0 5 5M12 12l7-7"/></svg></div><h3>Keeps listening</h3><p>The radio runs as a foreground service, with the screen off or the app closed.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>Open and honest</h3><p>AGPL-3.0-or-later, no proprietary dependencies, F-Droid friendly. The security notes list the limits as well as the strengths.</p></div>
+    <div class="card"><h3>Mesh relay</h3><p>Messages hop across intermediate phones to reach people out of direct range, with delivery receipts that travel back the same way.</p></div>
+    <div class="card"><h3>Encrypted end to end</h3><p>Forward-secret session keys between each pair of nodes. Relays carry what they cannot read.</p></div>
+    <div class="card"><h3>Verified contacts</h3><p>Scan a QR code in person to confirm who a node ID belongs to; the key is then pinned.</p></div>
+    <div class="card"><h3>Voice messages</h3><p>Hold the microphone and talk (up to 15 s). Opus over Bluetooth, Codec2 for slow links, resent if a chunk is lost.</p></div>
+    <div class="card"><h3>Photos, fast</h3><p>A Wi-Fi Direct link that Bluetooth sets up by itself: about 120 KB in a third of a second, no confirmation to tap. Stripped of location data.</p></div>
+    <div class="card"><h3>Group chat</h3><p>Up to 8 people, sealed separately for every member, managed by an admin.</p></div>
+    <div class="card"><h3>Offline maps</h3><p>A vector Mapsforge file for a whole country, downloaded once. See where everyone is, with no connection.</p></div>
+    <div class="card"><h3>Keeps listening</h3><p>The radio runs as a foreground service, with the screen off or the app closed.</p></div>
+    <div class="card"><h3>Open and honest</h3><p>AGPL-3.0-or-later, no proprietary dependencies, F-Droid friendly. The security notes list the limits as well as the strengths.</p></div>
   </div>
 </div></section>
 
 <section id="timeline"><div class="wrap">
   <p class="kicker">Timeline</p>
-  <h2>From a first ping to a mesh with voice and photos</h2>
-  <p class="sub">NodeWave started on 1 November 2026 with two phones and one word: "CIAO - 73". Here is how it grew, and where it is heading. The future part is a plan, not a promise: it changes with what the tests and the hardware tell us.</p>
+  <h2>How it got here</h2>
+  <p class="sub">NodeWave started on 1 November 2026 with two phones and one word: "CIAO - 73". This is how it grew and what I plan to do next. The future part is a plan, not a promise: it changes with what the tests and the hardware tell me.</p>
 
   <ol class="timeline">
     <li class="tl"><span class="dot"></span><span class="when">1 Nov</span><span class="ver">v0.1</span><h3>"CIAO - 73"</h3><p>The first radio ping between two phones over pure Bluetooth Low Energy. The transport contract that keeps the radio apart from the rest is born.</p></li>
@@ -129,13 +127,13 @@
 
 <section id="security"><div class="wrap">
   <p class="kicker">Security, honestly</p>
-  <h2>Standard cryptography, stated limits</h2>
+  <h2>Security</h2>
   <p class="sub">Only the standard Java and Android cryptography is used: P-256 signed ephemeral key exchange, HKDF-SHA256 and AES-256-GCM. Session keys live in memory only and are replaced every hour. The design has <strong>not been independently audited</strong>, and the limitations (visible metadata, trust on first contact, what a Wi-Fi Direct link reveals) are written down in the <a href="https://github.com/sputlab/nodewave/blob/main/docs/SECURITY.md">security notes</a>.</p>
 </div></section>
 
 <section id="get"><div class="wrap">
   <p class="kicker">Get it</p>
-  <h2>Install or build</h2>
+  <h2>Install or build it</h2>
   <p class="sub">Debug-signed APKs are attached to each <a href="https://github.com/sputlab/nodewave/releases">release</a> and update over each other. To build it yourself you need the Android SDK with NDK 27.2 and CMake 3.22.1 (for the Codec2 library):</p>
 <pre>git clone https://github.com/sputlab/nodewave
 cd nodewave
@@ -145,7 +143,7 @@ cd nodewave
 
 <section><div class="wrap">
   <div class="band">
-    <div class="grow"><h2>Help it grow</h2><p>NodeWave is free software and always will be. Testing it on your phone is the most useful thing you can do; donations pay for test phones, radio boards and hosting.</p></div>
+    <div class="grow"><h2>Want to help?</h2><p>NodeWave is free software. The most useful thing you can do is try it on your phone and tell me how it went. Donations, if you wish, pay for test phones, radio boards and hosting; every euro is listed on the <a href="transparency.html">transparency page</a>.</p></div>
     <a class="btn" href="test-report.html">Fill in a test report</a>
     <a class="btn amber solid" href="support.html">Support the project</a>
   </div>
@@ -154,7 +152,7 @@ cd nodewave
 
 <footer><div class="wrap">
   <div>NodeWave is free software under the <a href="https://github.com/sputlab/nodewave/blob/main/LICENSE">AGPL-3.0-or-later</a> licence.</div>
-  <div class="links"><a href="https://github.com/sputlab/nodewave">GitHub</a><a href="https://github.com/sputlab/nodewave/blob/main/CHANGELOG.md">Changelog</a><a href="devices.html">Devices</a><a href="test-report.html">Test report</a><a href="blog.html">Blog</a><a href="support.html">Support</a><a href="transparency.html">Transparency</a><a href="https://sputlab.com">Sputlab</a></div>
+  <div class="links"><a href="https://github.com/sputlab/nodewave">GitHub</a><a href="https://github.com/sputlab/nodewave/blob/main/CHANGELOG.md">Changelog</a><a href="devices.html">Devices</a><a href="test-report.html">Test report</a><a href="blog.html">Blog</a><a href="about.html">About</a><a href="support.html">Support</a><a href="transparency.html">Transparency</a><a href="https://sputlab.com">Sputlab</a></div>
 </div></footer>
 
 <script src="site.js"></script>
