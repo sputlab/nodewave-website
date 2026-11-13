@@ -444,3 +444,5 @@ footer{background:var(--bg)}
 :root[data-theme="dark"] .theme .moon{display:block}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .theme .sun{display:none}:root:not([data-theme="light"]) .theme .moon{display:block}}
 @media(max-width:760px){.theme{margin-left:auto}.burger{margin-left:10px}}
+
+.about-logo{display:block;width:min(360px,80%);height:auto;margin:0 auto 32px;border-radius:12%}
