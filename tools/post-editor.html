@@ -92,7 +92,7 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
   function btype(b) { return typeof b === 'string' ? 'paragraph' : b.img != null ? 'image' : b.list ? 'list' : 'heading'; }
 
   function renderList() {
-    var order = data.posts.map(function (p, i) { return i; }).sort(function (a, b) { var x = data.posts[a].date, y = data.posts[b].date; return x < y ? 1 : x > y ? -1 : 0; });
+    var order = data.posts.map(function (p, i) { return i; }).sort(function (a, b) { var x = data.posts[a].date, y = data.posts[b].date; return x < y ? 1 : x > y ? -1 : b - a; });
     $('plist').innerHTML = order.map(function (i) {
       var p = data.posts[i];
       return '<li data-i="' + i + '" class="' + (i === cur ? 'on' : '') + '"><strong>' + esc(p.title || '(untitled)') + '</strong><small>' + esc(p.date) + '</small></li>';
