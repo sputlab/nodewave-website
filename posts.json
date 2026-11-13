@@ -14,7 +14,6 @@
       "date": "2026-11-12",
       "title": "How I Built NodeWave in a Weekend (Without Writing a Single Line of Code)",
       "body": [
-        "**How I Built NodeWave in a Weekend (Without Writing a Single Line of Code)**",
         "If you browse this site and look at the app, your first thought might be: \"Okay, just another open-source project built by a developer over months of grinding in Android Studio.\"",
         "The reality is a bit different. I didn't write the code by hand.",
         "NodeWave is a 100% vibe-coding experiment, from the Android app right down to this very landing page. I didn't spend years studying Java or Kotlin syntax. Instead, I focused entirely on the system architecture and the logic, using AI as my development team to handle the raw syntax while I acted as the project architect.",
