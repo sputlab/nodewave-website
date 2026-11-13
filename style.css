@@ -447,3 +447,11 @@ footer{background:var(--bg)}
 
 .about-logo{float:left;width:160px;height:auto;margin:4px 16px 8px 0;border-radius:12%}
 @media(max-width:560px){.about-logo{width:110px;margin-right:12px}}
+
+/* ---- blog excerpts and modal ---- */
+.excerpt p{display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;margin:0 0 10px}
+.post .more{font-size:15px;font-weight:600}
+.postdlg{border:1px solid var(--line);border-radius:var(--radius,8px);background:var(--surface,var(--bg));color:var(--text);padding:0;width:min(760px,92vw);max-height:88vh;overflow:hidden}
+.postdlg::backdrop{background:rgba(0,0,0,.55)}
+.postdlg .post{border:0;margin:0;max-width:none;padding:28px;max-height:88vh;overflow-y:auto;background:transparent}
+.postdlg .dclose{position:absolute;top:8px;right:12px;z-index:2;background:var(--surface,var(--bg));border:1px solid var(--line);border-radius:6px;width:34px;height:34px;font-size:22px;line-height:1;color:var(--text);cursor:pointer}

@@ -31,7 +31,7 @@
   <div class="filters"><input type="search" id="bq" placeholder="Search posts..." aria-label="Search posts"></div>
   <div id="posts"><p class="empty">Loading...</p></div>
 </main>
-</main>
+<dialog id="postdlg" class="postdlg"><button type="button" class="dclose" aria-label="Close">&times;</button><div class="post" id="dlgbody"></div></dialog>
 
 <footer><div class="wrap">
   <div>NodeWave is free software under the <a href="https://github.com/sputlab/nodewave/blob/main/LICENSE">AGPL-3.0-or-later</a> licence.</div>
@@ -61,13 +61,35 @@
   function render() {
     var term = bq.value.trim().toLowerCase(), shown = posts.filter(function (p) { return !term || plain(p).indexOf(term) > -1; });
     box.innerHTML = shown.length ? shown.map(function (p) {
-      return '<article class="post" id="' + esc(p.id) + '"><p class="pdate">' + esc(p.date) + '</p><h2><a href="#' + esc(p.id) + '">' + esc(p.title) + '</a></h2>' + p.body.map(block).join('') + '</article>';
+      return '<article class="post" id="' + esc(p.id) + '"><p class="pdate">' + esc(p.date) + '</p><h2><a href="#' + esc(p.id) + '" data-open="' + esc(p.id) + '">' + esc(p.title) + '</a></h2><div class="excerpt">' + excerpt(p) + '</div><a class="more" href="#' + esc(p.id) + '" data-open="' + esc(p.id) + '">Read more...</a></article>';
     }).join('') : '<p class="empty">' + (posts.length ? 'No post matches your search.' : 'No posts yet.') + '</p>';
-    if (location.hash && !term) { var el = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (el) el.scrollIntoView(); }
   }
+  // first real paragraph (skipping a bold line that only repeats the title), clamped to a few lines by CSS
+  function excerpt(p) {
+    for (var i = 0; i < p.body.length; i++) {
+      var b = p.body[i];
+      if (typeof b === 'string' && b.replace(/\*/g, '').trim() !== p.title.trim()) return '<p>' + inline(b) + '</p>';
+    }
+    return '';
+  }
+  var dlg = document.getElementById('postdlg'), dbody = document.getElementById('dlgbody');
+  function openPost(id, push) {
+    var p = posts.filter(function (x) { return x.id === id; })[0]; if (!p) return;
+    dbody.innerHTML = '<p class="pdate">' + esc(p.date) + '</p><h2>' + esc(p.title) + '</h2>' + p.body.map(block).join('');
+    dbody.scrollTop = 0;
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+    if (push) history.replaceState(null, '', '#' + encodeURIComponent(id));
+  }
+  box.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-open]'); if (!a) return;
+    e.preventDefault(); openPost(a.getAttribute('data-open'), true);
+  });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.closest('.dclose')) dlg.close(); });
+  dlg.addEventListener('close', function () { history.replaceState(null, '', location.pathname + location.search); });
   fetch('posts.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
     posts = (d.posts || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
     render();
+    if (location.hash) openPost(decodeURIComponent(location.hash.slice(1)), false);
   }).catch(function () { box.innerHTML = '<p class="empty">The posts could not be loaded. Open <a href="posts.json">posts.json</a> directly.</p>'; });
   bq.addEventListener('input', render);
 })();
