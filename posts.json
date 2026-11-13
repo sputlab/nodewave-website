@@ -31,6 +31,27 @@
         "If this is the future of building—a world where anyone with a clear vision and a solid grasp of logic can build real software without needing to memorize syntax—I'm absolutely here for it.",
         "Oh, and by the way: if you try the app in the field and run into any bugs, please open an issue on GitHub. I'll fire up my AI workspace, analyze the logs, and we'll push a fix! 🚀"
       ]
+    },
+    {
+      "id": "lora-boards-ordered",
+      "date": "2026-11-14",
+      "title": "Hardware Update: LoRa 868 MHz Boards Ordered! Moving to Long-Range Field Testing ",
+      "body": [
+        "Big milestone for the NodeWave project! After validating our core Kotlin architecture, local peer discovery, and QR-Trust cryptography over native smartphone connections, I have officially ordered the first batch of dedicated LoRa hardware to take development and real-world range testing to the next level.",
+        "Here is the hardware kit that will arrive in just a few days:",
+        {
+          "list": [
+            "2x Waveshare USB-TO-LoRa-HF (plus flexible USB-C OTG cables): Powered by the Semtech SX1262 transceiver (+22 dBm at 868 MHz) and housed in a rugged sandblasted aluminum enclosure, these dongles will turn our test smartphones into long-range mobile operator nodes.",
+            "1x Meshnology ESP32 LoRa V4 (3000 mAh): Equipped with an ESP32-S3, an SX1262 radio chip, and an integrated Quectel L76 GNSS module, this board will serve as our standalone, battery-powered Store & Forward repeater and autonomous GPS beacon node."
+          ]
+        },
+        {
+          "heading": "What's next on the roadmap?"
+        },
+        "While waiting for the delivery, I'm writing the new WaveshareSerialTransport.kt class to handle AT command framing over USB Serial. Because all radio hardware in NodeWave is isolated behind our MeshTransport interface, the Jetpack Compose UI, end-to-end encryption, and Codec2 voice bursts will work across the new LoRa link without touching the upper layers of the app.",
+        "I can't wait to unbox everything in a few days, run the first bench tests, and head outdoors for multi-kilometer ping trials!",
+        "Stay tuned for the first field logs, 73!"
+      ]
     }
   ]
 }
