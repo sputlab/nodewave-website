@@ -84,6 +84,8 @@ Add an object to the `devices` array of `devices.json`; the list sorts itself an
 
 ## Writing a blog post
 
+You can write posts with the offline editor: open `tools/post-editor.html` in a browser (no server needed), load `posts.json`, edit, then download the new `posts.json` and replace the file. The format it produces is described below.
+
 Add an object to the `posts` array of `posts.json` (newest first is not required, the page sorts by date). Each post has a unique `id` (used for the link `blog.html#id`), a `date` (`YYYY-MM-DD`), a `title` and a `body`, a list of blocks:
 
 ```json
