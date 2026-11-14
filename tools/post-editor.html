@@ -19,21 +19,29 @@ button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
 button.del{color:var(--danger)}
 button.sm{padding:2px 8px;font-size:13px}
 input,textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-textarea{resize:vertical;min-height:70px}
-.layout{display:grid;grid-template-columns:260px 1fr 1fr;gap:16px;padding:16px;align-items:start}
-@media(max-width:1100px){.layout{grid-template-columns:240px 1fr}.preview{grid-column:1/-1}}
+textarea{resize:vertical;min-height:60px;overflow:hidden}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr) minmax(0,1fr);gap:16px;padding:16px;align-items:start}
+@media(max-width:1100px){.layout{grid-template-columns:230px minmax(0,1fr)}.preview{grid-column:1/-1}}
 @media(max-width:700px){.layout{grid-template-columns:1fr}}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
-.plist{list-style:none;margin:0;padding:0}
+.plist{list-style:none;margin:10px 0;padding:0}
 .plist li{padding:8px;border-radius:6px;cursor:pointer;border:1px solid transparent}
 .plist li:hover{border-color:var(--line)}
 .plist li.on{border-color:var(--acc)}
 .plist small{display:block;color:var(--mut)}
 label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
 .row{display:grid;grid-template-columns:1fr 150px;gap:10px}
-.blk{border:1px solid var(--line);border-radius:8px;padding:8px;margin:10px 0}
-.bh{display:flex;gap:6px;align-items:center;margin-bottom:6px;color:var(--mut);font-size:13px}
-.bh b{margin-right:auto;text-transform:uppercase;letter-spacing:.05em}
+.blk{border:1px solid var(--line);border-radius:8px;padding:8px;margin:8px 0;background:var(--panel);position:relative}
+.blk.dragging{opacity:.4}
+.blk.over-top{box-shadow:0 -3px 0 var(--acc)}
+.blk.over-bot{box-shadow:0 3px 0 var(--acc)}
+.bh{display:flex;gap:6px;align-items:center;margin-bottom:6px;color:var(--mut);font-size:13px;flex-wrap:wrap}
+.bh b{text-transform:uppercase;letter-spacing:.05em}
+.bh .sp{margin-right:auto}
+.grip{cursor:grab;user-select:none;font-size:18px;line-height:1;padding:0 6px;color:var(--mut)}
+.grip:active{cursor:grabbing}
+.tools{display:flex;gap:4px}
+.tools button{padding:0 8px;min-width:28px;font-size:13px}
 .add{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .hint{color:var(--mut);font-size:13px}
 .msg{color:var(--acc);font-size:13px}
@@ -41,6 +49,17 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
 .preview h2{margin-top:0}.preview figure{margin:12px 0}.preview figcaption{color:var(--mut);font-size:13px}
 .preview img{max-width:100%;height:auto}
 .preview a{color:var(--acc)}
+.preview table{border-collapse:collapse;font-size:13px}.preview th,.preview td{border:1px solid var(--line);padding:3px 7px;text-align:left}
+.preview pre{overflow-x:auto;background:var(--bg);padding:10px;border-radius:6px}
+.preview code{background:var(--bg);padding:0 4px;border-radius:3px}
+.preview .tbl{overflow-x:auto}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);width:min(720px,94vw);padding:16px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog textarea{min-height:260px;overflow:auto;font-family:ui-monospace,Menlo,monospace;font-size:13px}
+.drow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.drow label{display:inline;margin:0;color:var(--text)}
+.drow input[type=radio]{width:auto}
+.drow input[type=file]{width:auto}
 </style>
 </head>
 <body>
@@ -49,6 +68,7 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
   <span id="status" class="msg"></span>
   <input type="file" id="file" accept=".json,application/json" hidden>
   <button id="open">Open posts.json…</button>
+  <button id="import">Import text…</button>
   <button id="copy">Copy JSON</button>
   <button id="dl" class="pri">Download posts.json</button>
 </header>
@@ -65,13 +85,32 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
   <section class="panel preview" id="preview"></section>
 </div>
 
+<dialog id="impdlg">
+  <h3 style="margin-top:0">Import text</h3>
+  <p class="hint">Paste Markdown, HTML, or text copied from Word, Google Docs, a web page or Notion (formatting is kept: headings, bold, italic, links, lists, tables). You can also load a <code>.md</code>, <code>.html</code> or <code>.txt</code> file.</p>
+  <textarea id="imptext" placeholder="Paste here…"></textarea>
+  <div class="drow">
+    <input type="file" id="impfile" accept=".md,.markdown,.txt,.html,.htm,text/*">
+    <span style="margin-left:auto"></span>
+    <label><input type="radio" name="impmode" value="append" checked> Add to the current post</label>
+    <label><input type="radio" name="impmode" value="new"> Create a new post</label>
+  </div>
+  <div class="drow">
+    <span id="impinfo" class="hint"></span>
+    <span style="margin-left:auto"></span>
+    <button id="impcancel">Cancel</button>
+    <button id="impgo" class="pri">Import</button>
+  </div>
+</dialog>
+
 <script>
 (function () {
-  var KEY = 'nodewave-post-editor', data = { posts: [] }, cur = -1;
+  var KEY = 'nodewave-post-editor', data = { posts: [] }, cur = -1, dragFrom = -1;
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
   function safeUrl(u) { return /^(https?:|mailto:|[\w./#?=&%-]+$)/i.test(u) ? u : '#'; }
-  // same rendering rules as blog.html
+
+  /* ---------- rendering rules (same as blog.html) ---------- */
   function inline(t) {
     var out = '', re = /\[([^\]]+)\]\(([^)\s]+)\)/g, last = 0, m;
     function fmt(x) { return esc(x).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>'); }
@@ -80,18 +119,86 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
   }
   function blockHtml(b) {
     if (typeof b === 'string') return '<p>' + inline(b) + '</p>';
-    if (b.img) return '<figure><img src="../' + esc(safeUrl(b.img)) + '" alt="' + esc(b.alt || '') + '">' + (b.caption ? '<figcaption>' + inline(b.caption) + '</figcaption>' : '') + '</figure>';
-    if (b.heading != null) return '<h3>' + esc(b.heading) + '</h3>';
-    if (b.table && b.table.length) return '<table border="1" cellpadding="4" style="border-collapse:collapse;font-size:13px"><tr>' + b.table[0].map(function (c) { return '<th>' + inline(c) + '</th>'; }).join('') + '</tr>' + b.table.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + inline(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table>';
+    if (b.img != null) return '<figure><img src="../' + esc(safeUrl(b.img)) + '" alt="' + esc(b.alt || '') + '">' + (b.caption ? '<figcaption>' + inline(b.caption) + '</figcaption>' : '') + '</figure>';
+    if (b.table && b.table.length) return '<div class="tbl"><table><tr>' + b.table[0].map(function (c) { return '<th>' + inline(c) + '</th>'; }).join('') + '</tr>' + b.table.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + inline(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>';
     if (b.code != null) return '<pre>' + esc(b.code) + '</pre>';
+    if (b.heading != null) return '<h3>' + esc(b.heading) + '</h3>';
     if (b.list) return '<ul>' + b.list.map(function (i) { return '<li>' + inline(i) + '</li>'; }).join('') + '</ul>';
     return '';
   }
+
+  /* ---------- import: HTML -> Markdown -> blocks ---------- */
+  function mdInline(n) {
+    if (n.nodeType === 3) return n.nodeValue.replace(/\s+/g, ' ');
+    if (n.nodeType !== 1) return '';
+    var t = n.tagName.toLowerCase(), c = Array.prototype.map.call(n.childNodes, mdInline).join('');
+    var fw = (n.style && n.style.fontWeight) || '', fs = (n.style && n.style.fontStyle) || '';
+    if (t === 'br') return ' ';
+    if (!c.trim()) return c;
+    if (t === 'strong' || t === 'b' || fw === 'bold' || +fw >= 600) return '**' + c.trim() + '** ';
+    if (t === 'em' || t === 'i' || fs === 'italic') return '*' + c.trim() + '* ';
+    if (t === 'code') return '`' + c.trim() + '`';
+    if (t === 'a' && n.getAttribute('href')) return '[' + c.trim() + '](' + n.getAttribute('href').replace(/\s/g, '%20') + ')';
+    return c;
+  }
+  function htmlToMd(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html'), out = [];
+    doc.querySelectorAll('script,style,head').forEach(function (x) { x.remove(); });
+    function clean(s) { return s.replace(/\s+/g, ' ').trim(); }
+    function walk(n) {
+      if (n.nodeType === 3) { if (n.nodeValue.trim()) out.push(clean(n.nodeValue)); return; }
+      if (n.nodeType !== 1) return;
+      var t = n.tagName.toLowerCase();
+      if (/^h[1-6]$/.test(t)) out.push('## ' + clean(mdInline(n)));
+      else if (t === 'p') { var x = clean(mdInline(n)); if (x) out.push(x); }
+      else if (t === 'ul' || t === 'ol') out.push(Array.prototype.filter.call(n.children, function (li) { return li.tagName === 'LI'; }).map(function (li) { return '- ' + clean(mdInline(li)); }).join('\n'));
+      else if (t === 'pre') out.push('```\n' + n.textContent.replace(/\n$/, '') + '\n```');
+      else if (t === 'table') {
+        var rows = Array.prototype.map.call(n.querySelectorAll('tr'), function (tr) { return Array.prototype.map.call(tr.children, function (c) { return clean(mdInline(c)).replace(/\|/g, '/'); }); });
+        if (rows.length) out.push('| ' + rows[0].join(' | ') + ' |\n|' + rows[0].map(function () { return '---'; }).join('|') + '|\n' + rows.slice(1).map(function (r) { return '| ' + r.join(' | ') + ' |'; }).join('\n'));
+      } else if (t === 'img') out.push('![' + (n.getAttribute('alt') || '') + '](' + (n.getAttribute('src') || '') + ')');
+      else if (t === 'blockquote') out.push(clean(mdInline(n)));
+      else if (t === 'br' || t === 'hr') return;
+      else if (n.querySelector('h1,h2,h3,h4,h5,h6,p,ul,ol,pre,table,img,div,li')) Array.prototype.forEach.call(n.childNodes, walk);
+      else { var y = clean(mdInline(n)); if (y) out.push(y); }
+    }
+    Array.prototype.forEach.call(doc.body.childNodes, walk);
+    return out.join('\n\n');
+  }
+  function mdToBlocks(md) {
+    var L = md.replace(/\r\n?/g, '\n').split('\n'), out = [], para = [], i = 0;
+    function flush() { if (para.length) { out.push(para.join(' ').trim()); para = []; } }
+    function row(l) { return l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(function (c) { return c.trim(); }); }
+    var LI = /^\s*([-*+•]|\d+[.)])\s+(.*)$/;
+    while (i < L.length) {
+      var l = L[i], m;
+      if (/^\s*```/.test(l)) { flush(); var code = []; i++; while (i < L.length && !/^\s*```/.test(L[i])) code.push(L[i++]); i++; out.push({ code: code.join('\n') }); continue; }
+      if (!l.trim()) { flush(); i++; continue; }
+      if ((m = l.match(/^#{1,6}\s+(.*?)\s*#*$/))) { flush(); out.push({ heading: m[1] }); i++; continue; }
+      if (/^\s*\|/.test(l) && i + 1 < L.length && /^\s*\|?[\s:|-]+\|[\s:|-]*$/.test(L[i + 1]) && /-/.test(L[i + 1])) {
+        flush(); var rows = [row(l)]; i += 2;
+        while (i < L.length && /^\s*\|/.test(L[i])) rows.push(row(L[i++]));
+        out.push({ table: rows }); continue;
+      }
+      if (LI.test(l)) { flush(); var items = []; while (i < L.length && L[i].trim()) { if ((m = L[i].match(LI))) items.push(m[2].trim()); else if (items.length) items[items.length - 1] += ' ' + L[i].trim(); i++; } out.push({ list: items }); continue; }
+      if ((m = l.trim().match(/^!\[(.*?)\]\((\S+?)(?:\s+"(.*?)")?\)$/))) { flush(); var im = { img: m[2], alt: m[1] }; if (m[3]) im.caption = m[3]; out.push(im); i++; continue; }
+      para.push(l.replace(/^\s*>\s?/, '').trim()); i++;
+    }
+    flush();
+    return out;
+  }
+  function textToBlocks(text) {
+    text = text.trim();
+    if (/^<[a-z!][\s\S]*>/i.test(text) && /<\/?(p|h[1-6]|ul|ol|li|div|table|a|b|strong|em|i|br|span)\b/i.test(text)) text = htmlToMd(text);
+    return mdToBlocks(text);
+  }
+
+  /* ---------- state helpers ---------- */
   function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} }
-  function flash(t, bad) { var s = $('status'); s.className = bad ? 'err' : 'msg'; s.textContent = t; setTimeout(function () { s.textContent = ''; }, 3000); }
-  function slug(t) { return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50); }
+  function flash(t, bad) { var s = $('status'); s.className = bad ? 'err' : 'msg'; s.textContent = t; setTimeout(function () { s.textContent = ''; }, 3500); }
   function today() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function btype(b) { return typeof b === 'string' ? 'paragraph' : b.img != null ? 'image' : b.list ? 'list' : b.table ? 'table' : b.code != null ? 'code' : 'heading'; }
+  function grow(t) { t.style.height = 'auto'; t.style.height = (t.scrollHeight + 2) + 'px'; }
 
   function renderList() {
     var order = data.posts.map(function (p, i) { return i; }).sort(function (a, b) { var x = data.posts[a].date, y = data.posts[b].date; return x < y ? 1 : x > y ? -1 : b - a; });
@@ -104,34 +211,52 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
     var p = data.posts[cur];
     $('preview').innerHTML = p ? '<h2>' + esc(p.title) + '</h2><p class="hint">' + esc(p.date) + '</p>' + p.body.map(blockHtml).join('') : '<p class="hint">Preview</p>';
   }
+  function tools(i, k) {
+    return '<span class="tools"><button class="sm" title="Bold (Ctrl+B)" data-fmt="b" data-i="' + i + '" data-k="' + k + '"><b>B</b></button><button class="sm" title="Italic (Ctrl+I)" data-fmt="i" data-i="' + i + '" data-k="' + k + '"><i>I</i></button><button class="sm" title="Link (Ctrl+K)" data-fmt="a" data-i="' + i + '" data-k="' + k + '">🔗</button><button class="sm" title="Code" data-fmt="c" data-i="' + i + '" data-k="' + k + '">&lt;/&gt;</button></span>';
+  }
   function renderEditor() {
     var p = data.posts[cur], el = $('editor');
     if (!p) { el.innerHTML = '<p class="hint">Select a post or create a new one.</p>'; renderPreview(); return; }
     var h = '<div class="row"><div><label>Title</label><input data-f="title" value="' + esc(p.title) + '"></div><div><label>Date</label><input type="date" data-f="date" value="' + esc(p.date) + '"></div></div>' +
       '<label>ID (used in the link blog.html#id)</label><input data-f="id" value="' + esc(p.id) + '">' +
-      '<div id="iderr" class="err"></div><label>Body</label>';
+      '<div id="iderr" class="err"></div><label>Body <span class="hint">· drag the ⠿ handle to reorder</span></label><div id="blocks">';
     p.body.forEach(function (b, i) {
-      var t = btype(b), inner;
-      if (t === 'paragraph') inner = '<textarea data-i="' + i + '" data-k="text">' + esc(b) + '</textarea>';
+      var t = btype(b), inner, tl = '';
+      if (t === 'paragraph') { inner = '<textarea data-i="' + i + '" data-k="text">' + esc(b) + '</textarea>'; tl = tools(i, 'text'); }
       else if (t === 'heading') inner = '<input data-i="' + i + '" data-k="heading" value="' + esc(b.heading) + '">';
-      else if (t === 'table') inner = '<textarea data-i="' + i + '" data-k="table" placeholder="First line = header. Cells separated by |">' + esc(b.table.map(function (r) { return r.join(' | '); }).join('\n')) + '</textarea>';
-      else if (t === 'code') inner = '<textarea data-i="' + i + '" data-k="code" style="font-family:monospace">' + esc(b.code) + '</textarea>';
-      else if (t === 'list') inner = '<textarea data-i="' + i + '" data-k="list" placeholder="One item per line">' + esc(b.list.join('\n')) + '</textarea>';
-      else inner = '<input data-i="' + i + '" data-k="img" placeholder="assets/screens/map.png" value="' + esc(b.img) + '"><input data-i="' + i + '" data-k="alt" placeholder="Alt text" value="' + esc(b.alt || '') + '" style="margin-top:6px"><input data-i="' + i + '" data-k="caption" placeholder="Caption (optional)" value="' + esc(b.caption || '') + '" style="margin-top:6px">';
-      h += '<div class="blk"><div class="bh"><b>' + t + '</b>' +
-        '<button class="sm" data-act="up" data-i="' + i + '">↑</button><button class="sm" data-act="down" data-i="' + i + '">↓</button><button class="sm del" data-act="rm" data-i="' + i + '">Delete</button></div>' + inner + '</div>';
+      else if (t === 'list') { inner = '<textarea data-i="' + i + '" data-k="list" placeholder="One item per line">' + esc(b.list.join('\n')) + '</textarea>'; tl = tools(i, 'list'); }
+      else if (t === 'table') inner = '<textarea data-i="' + i + '" data-k="table" placeholder="First line = header. Cells separated by |" style="font-family:monospace;font-size:13px;white-space:pre">' + esc(b.table.map(function (r) { return r.join(' | '); }).join('\n')) + '</textarea>';
+      else if (t === 'code') inner = '<textarea data-i="' + i + '" data-k="code" style="font-family:monospace;font-size:13px;white-space:pre">' + esc(b.code) + '</textarea>';
+      else inner = '<input data-i="' + i + '" data-k="img" placeholder="assets/images/posts/photo.jpg" value="' + esc(b.img) + '"><input data-i="' + i + '" data-k="alt" placeholder="Alt text" value="' + esc(b.alt || '') + '" style="margin-top:6px"><input data-i="' + i + '" data-k="caption" placeholder="Caption (optional)" value="' + esc(b.caption || '') + '" style="margin-top:6px">';
+      h += '<div class="blk" data-b="' + i + '"><div class="bh"><span class="grip" title="Drag to reorder" data-grip="' + i + '">⠿</span><b class="sp">' + t + '</b>' + tl +
+        '<button class="sm" title="Move up" data-act="up" data-i="' + i + '">↑</button><button class="sm" title="Move down" data-act="down" data-i="' + i + '">↓</button><button class="sm" title="Duplicate" data-act="dup" data-i="' + i + '">⧉</button><button class="sm del" data-act="rm" data-i="' + i + '">✕</button></div>' + inner + '</div>';
     });
-    h += '<div class="add"><button data-add="paragraph">+ Paragraph</button><button data-add="heading">+ Heading</button><button data-add="list">+ List</button><button data-add="image">+ Image</button><button data-add="table">+ Table</button><button data-add="code">+ Code</button></div>' +
-      '<p class="hint">In text: [label](url) for links, **bold**, *italic*, `code`.</p><hr style="border:0;border-top:1px solid var(--line)"><button class="del" data-act="delpost">Delete this post</button>';
+    h += '</div><div class="add"><button data-add="paragraph">+ Paragraph</button><button data-add="heading">+ Heading</button><button data-add="list">+ List</button><button data-add="image">+ Image</button><button data-add="table">+ Table</button><button data-add="code">+ Code</button></div>' +
+      '<p class="hint">In text: [label](url) for links, **bold**, *italic*, `code`. Select text and use B / I / 🔗 / &lt;/&gt; (or Ctrl+B, Ctrl+I, Ctrl+K).</p><hr style="border:0;border-top:1px solid var(--line)"><button data-act="dupost">Duplicate post</button> <button class="del" data-act="delpost">Delete post</button>';
     el.innerHTML = h;
+    el.querySelectorAll('textarea').forEach(grow);
     renderPreview();
   }
 
-  $('editor').addEventListener('input', function (e) {
+  /* ---------- text formatting helpers ---------- */
+  function format(ta, kind) {
+    var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e), rep;
+    if (kind === 'a') {
+      var url = prompt('Link address (URL or page like support.html):', 'https://'); if (!url) return;
+      rep = '[' + (sel || 'link') + '](' + url + ')';
+    } else { var w = { b: '**', i: '*', c: '`' }[kind]; rep = w + (sel || 'text') + w; }
+    ta.setRangeText(rep, s, e, 'select'); ta.focus();
+    ta.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  /* ---------- editor events ---------- */
+  var ed = $('editor');
+  ed.addEventListener('input', function (e) {
     var t = e.target, p = data.posts[cur]; if (!p) return;
+    if (t.tagName === 'TEXTAREA') grow(t);
     if (t.dataset.f) {
       p[t.dataset.f] = t.value;
-      if (t.dataset.f === 'id' || t.dataset.f === 'title') {
+      if (t.dataset.f === 'id') {
         var dup = data.posts.some(function (q, i) { return i !== cur && q.id === p.id; });
         $('iderr').textContent = !p.id ? 'ID is required.' : dup ? 'Another post already uses this ID.' : '';
       }
@@ -141,24 +266,58 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
       else if (k === 'list') b.list = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
       else if (k === 'heading') b.heading = t.value;
       else if (k === 'code') b.code = t.value;
-      else if (k === 'table') b.table = t.value.split('\n').filter(function (l) { return l.trim(); }).map(function (l) { return l.split('|').map(function (c) { return c.trim(); }); });
+      else if (k === 'table') b.table = t.value.split('\n').filter(function (l) { return l.trim(); }).map(function (l) { return l.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(function (c) { return c.trim(); }); });
       else if (t.value || k === 'img') b[k] = t.value; else delete b[k];
     }
     save(); renderPreview(); renderList();
   });
-  $('editor').addEventListener('click', function (e) {
+  ed.addEventListener('keydown', function (e) {
+    var t = e.target; if (t.tagName !== 'TEXTAREA' || !(e.ctrlKey || e.metaKey)) return;
+    var k = { b: 'b', i: 'i', k: 'a' }[e.key.toLowerCase()];
+    if (k && (t.dataset.k === 'text' || t.dataset.k === 'list')) { e.preventDefault(); format(t, k); }
+  });
+  ed.addEventListener('click', function (e) {
     var t = e.target.closest('button'); if (!t) return;
     var p = data.posts[cur], i = +t.dataset.i;
+    if (t.dataset.fmt) { var ta = ed.querySelector('textarea[data-i="' + i + '"][data-k="' + t.dataset.k + '"]'); if (ta) format(ta, t.dataset.fmt); return; }
     if (t.dataset.add) {
-      p.body.push({ paragraph: '', heading: { heading: '' }, list: { list: [] }, image: { img: '', alt: '' }, table: { table: [['Column 1', 'Column 2'], ['', '']] }, code: { code: '' } }[t.dataset.add]);
-      if (t.dataset.add === 'paragraph') p.body[p.body.length - 1] = '';
+      var nb = { paragraph: '', heading: { heading: '' }, list: { list: [] }, image: { img: '', alt: '' }, table: { table: [['Column 1', 'Column 2'], ['', '']] }, code: { code: '' } }[t.dataset.add];
+      p.body.push(nb);
     } else if (t.dataset.act === 'rm') p.body.splice(i, 1);
+    else if (t.dataset.act === 'dup') p.body.splice(i + 1, 0, JSON.parse(JSON.stringify(p.body[i])));
     else if (t.dataset.act === 'up' && i > 0) p.body.splice(i - 1, 0, p.body.splice(i, 1)[0]);
     else if (t.dataset.act === 'down' && i < p.body.length - 1) p.body.splice(i + 1, 0, p.body.splice(i, 1)[0]);
+    else if (t.dataset.act === 'dupost') { var c = JSON.parse(JSON.stringify(p)); c.id += '-copy'; c.title += ' (copy)'; data.posts.push(c); cur = data.posts.length - 1; }
     else if (t.dataset.act === 'delpost') { if (!confirm('Delete this post?')) return; data.posts.splice(cur, 1); cur = -1; }
     else return;
     save(); renderList(); renderEditor();
   });
+
+  /* drag and drop reordering (handle only, so text selection in fields keeps working) */
+  ed.addEventListener('mousedown', function (e) { var g = e.target.closest('.grip'); if (g) g.closest('.blk').draggable = true; });
+  ed.addEventListener('mouseup', function () { ed.querySelectorAll('.blk[draggable]').forEach(function (b) { b.draggable = false; }); });
+  function clearOver() { ed.querySelectorAll('.over-top,.over-bot').forEach(function (b) { b.classList.remove('over-top', 'over-bot'); }); }
+  ed.addEventListener('dragstart', function (e) {
+    var b = e.target.closest && e.target.closest('.blk'); if (!b) return;
+    dragFrom = +b.dataset.b; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(dragFrom));
+    setTimeout(function () { b.classList.add('dragging'); }, 0);
+  });
+  ed.addEventListener('dragover', function (e) {
+    if (dragFrom < 0) return;
+    var b = e.target.closest('.blk'); if (!b) return;
+    e.preventDefault(); clearOver();
+    var r = b.getBoundingClientRect(); b.classList.add(e.clientY < r.top + r.height / 2 ? 'over-top' : 'over-bot');
+  });
+  ed.addEventListener('drop', function (e) {
+    if (dragFrom < 0) return;
+    var b = e.target.closest('.blk'); if (!b) return;
+    e.preventDefault();
+    var r = b.getBoundingClientRect(), to = +b.dataset.b + (e.clientY < r.top + r.height / 2 ? 0 : 1), body = data.posts[cur].body;
+    var item = body.splice(dragFrom, 1)[0]; if (to > dragFrom) to--;
+    body.splice(to, 0, item); dragFrom = -1; save(); renderEditor();
+  });
+  ed.addEventListener('dragend', function () { dragFrom = -1; clearOver(); ed.querySelectorAll('.dragging').forEach(function (b) { b.classList.remove('dragging'); b.draggable = false; }); });
+
   $('plist').addEventListener('click', function (e) {
     var li = e.target.closest('li[data-i]'); if (!li) return;
     cur = +li.dataset.i; renderList(); renderEditor();
@@ -168,6 +327,40 @@ label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
     cur = data.posts.length - 1; save(); renderList(); renderEditor();
   });
 
+  /* ---------- import dialog ---------- */
+  var dlg = $('impdlg'), imp = $('imptext');
+  $('import').addEventListener('click', function () { imp.value = ''; $('impinfo').textContent = ''; dlg.showModal(); imp.focus(); });
+  $('impcancel').addEventListener('click', function () { dlg.close(); });
+  imp.addEventListener('paste', function (e) {
+    var h = e.clipboardData && e.clipboardData.getData('text/html');
+    if (h && /<(p|h[1-6]|ul|ol|table|b|strong|em|a)\b/i.test(h)) {
+      e.preventDefault();
+      imp.setRangeText(htmlToMd(h), imp.selectionStart, imp.selectionEnd, 'end');
+      $('impinfo').textContent = 'Rich text converted to Markdown.';
+    }
+  });
+  $('impfile').addEventListener('change', function () {
+    var f = this.files[0]; if (!f) return; var r = new FileReader();
+    r.onload = function () { imp.value = /\.html?$/i.test(f.name) ? htmlToMd(r.result) : r.result; $('impinfo').textContent = f.name + ' loaded.'; };
+    r.readAsText(f); this.value = '';
+  });
+  $('impgo').addEventListener('click', function () {
+    var blocks = textToBlocks(imp.value);
+    if (!blocks.length) { $('impinfo').textContent = 'Nothing to import.'; return; }
+    var n = blocks.length, mode = document.querySelector('input[name=impmode]:checked').value;
+    if (mode === 'new' || !data.posts[cur]) {
+      var title = 'Imported post';
+      if (blocks[0] && blocks[0].heading) { title = blocks[0].heading; blocks.shift(); }
+      data.posts.push({ id: 'imported-' + Date.now().toString(36), date: today(), title: title, body: blocks.length ? blocks : [''] });
+      cur = data.posts.length - 1;
+    } else {
+      var body = data.posts[cur].body; if (body.length === 1 && body[0] === '') body.length = 0;
+      blocks.forEach(function (b) { body.push(b); });
+    }
+    save(); renderList(); renderEditor(); dlg.close(); flash('Imported ' + n + ' blocks.');
+  });
+
+  /* ---------- export / open ---------- */
   function problems() {
     var ids = {}, out = [];
     data.posts.forEach(function (p) {
