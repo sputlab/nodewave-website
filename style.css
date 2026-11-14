@@ -455,3 +455,7 @@ footer{background:var(--bg)}
 .postdlg::backdrop{background:rgba(0,0,0,.55)}
 .postdlg .post{border:0;margin:0;max-width:none;padding:28px;max-height:88vh;overflow-y:auto;background:transparent}
 .postdlg .dclose{position:absolute;top:8px;right:12px;z-index:2;background:var(--surface,var(--bg));border:1px solid var(--line);border-radius:6px;width:34px;height:34px;font-size:22px;line-height:1;color:var(--text);cursor:pointer}
+.post code{font:.9em var(--mono,monospace);background:var(--line);padding:1px 5px;border-radius:4px}
+.post pre{overflow-x:auto;background:var(--line);padding:12px;border-radius:6px}.post pre code{background:none;padding:0}
+.post .tbl{overflow-x:auto;margin:14px 0}.post table{border-collapse:collapse;font-size:14px;width:100%}
+.post th,.post td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top;color:var(--dim)}.post th{color:var(--text)}
