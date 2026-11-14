@@ -17,7 +17,7 @@ The site of [nodewave.org](https://nodewave.org): plain HTML, CSS and a little J
 - `CNAME`: the custom domain `nodewave.org` (GitHub Pages reads it from here)
 - `.nojekyll`: serve the files as they are
 
-The top menu holds Screens, Features, Timeline, Get it, Blog and the Support button; Devices and Test report are reached from the footer, the home page and the Support page. The header and the footer links are repeated in every HTML page. When you add or rename a page, update them in all pages.
+The top menu holds Screens, Features, Timeline, Get it, Devlog and the Support button; Devices and Test report are reached from the footer, the home page and the Support page. The header and the footer links are repeated in every HTML page. When you add or rename a page, update them in all pages.
 
 ## Run it locally
 
@@ -97,7 +97,7 @@ Add an object to the `posts` array of `posts.json` (newest first is not required
     "A paragraph. It can contain a [link](https://nodewave.org), **bold** and *italic* text.",
     { "heading": "What is new" },
     { "list": ["First item", "Second item with a [link](support.html)"] },
-    { "img": "assets/screens/map.png", "alt": "The offline map", "caption": "Optional caption, links allowed." }
+    { "img": "assets/screens/sam_10_map_nodes.png", "alt": "The offline map", "caption": "Optional caption, links allowed." }
   ]
 }
 ```
