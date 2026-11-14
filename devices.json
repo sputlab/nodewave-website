@@ -20,12 +20,21 @@
     },
     {
       "brand": "Sony",
-      "model": "Xperia",
+      "model": "Xperia 5 II",
       "code": "XQ-AS52",
       "android": 12,
       "skin": "Near-stock",
       "tester": "Project",
       "notes": "The first phone with the new Bluetooth permissions (scan, advertise, connect) and no location requirement."
+    },
+    {
+      "brand": "Wiko",
+      "model": "Y62",
+      "code": "",
+      "android": 11,
+      "skin": "",
+      "tester": "Project",
+      "notes": "Used for Android 11 testing."
     },
     {
       "brand": "Samsung",
