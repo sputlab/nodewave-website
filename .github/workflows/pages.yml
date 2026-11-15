@@ -34,10 +34,13 @@ jobs:
       - name: Numbers for the home page
         working-directory: app
         run: |
-          printf '{"since":"%s","releases":%s,"tests":%s}\n' \
+          LATEST="$(git tag --list 'v[0-9]*' --sort=-v:refname | head -1)"
+          printf '{"since":"%s","releases":%s,"tests":%s,"version":"%s","released":"%s"}\n' \
             "$(git log --reverse --format=%cs | head -1)" \
             "$(git tag --list 'v*' | wc -l | tr -d ' ')" \
-            "$(grep -rh '@Test' app/src/test | wc -l | tr -d ' ')" > ../stats.json
+            "$(grep -rh '@Test' app/src/test | wc -l | tr -d ' ')" \
+            "${LATEST#v}" \
+            "$(git for-each-ref --format='%(creatordate:short)' "refs/tags/$LATEST")" > ../stats.json
           cat ../stats.json
       - name: Assemble the site
         run: |

@@ -139,8 +139,10 @@
   fetch('stats.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (s) {
     var days = Math.max(1, Math.floor((Date.now() - Date.parse(s.since)) / 86400000) + 1);
     cells.forEach(function (el) {
-      var v = el.dataset.stat === 'days' ? days : s[el.dataset.stat];
-      if (typeof v === 'number') show(el, v);
+      var k = el.dataset.stat, v = k === 'days' ? days : s[k];
+      if (k === 'version' && /^\d+\.\d+\.\d+/.test(v)) el.textContent = 'v' + v;
+      else if (k === 'released' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { var d = new Date(v + 'T12:00:00Z'); el.textContent = d.getUTCDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()] + ' ' + d.getUTCFullYear(); }
+      else if (typeof v === 'number') show(el, v);
     });
   }).catch(function () {});
 })();

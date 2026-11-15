@@ -462,3 +462,8 @@ footer{background:var(--bg)}
 
 .tag.neutral{color:var(--dim);border-color:var(--line2);background:var(--bg2,transparent)}
 .relchip{margin:0 0 14px}
+
+/* phone frame: wraps the screenshot at its true proportions, corners are concentric (outer radius minus the bezel) */
+.phone{aspect-ratio:auto;height:auto;padding:6px;border-radius:12%/5.8%;container-type:inline-size}
+.phone img{width:100%;height:auto;aspect-ratio:1080/2190;object-fit:cover;border-radius:calc(12cqw - 5px)}
+.phone::after{display:none}
