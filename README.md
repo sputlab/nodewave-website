@@ -97,7 +97,7 @@ Add an object to the `posts` array of `posts.json` (newest first is not required
     "A paragraph. It can contain a [link](https://nodewave.org), **bold** and *italic* text.",
     { "heading": "What is new" },
     { "list": ["First item", "Second item with a [link](support.html)"] },
-    { "img": "assets/screens/sam_10_map_nodes.png", "alt": "The offline map", "caption": "Optional caption, links allowed." }
+    { "img": "assets/screens/map.png", "alt": "The offline map", "caption": "Optional caption, links allowed." }
   ]
 }
 ```
