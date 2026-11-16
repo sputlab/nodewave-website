@@ -64,7 +64,7 @@
           "heading": "The devices"
         },
         {
-          "img": "assets/images/posts/nodewave-five-tel-test.jpg",
+          "img": "assets/images/nodewave-5-tel-test.jpg",
           "alt": "NodeWave five telephones tests"
         },
         {
@@ -98,7 +98,7 @@
             ],
             [
               "Wiko",
-              "Wiko Y62 (W-K610-EEA)",
+              "Wiko K610 (W-K610-EEA)",
               "11 (API 30)",
               "MediaTek MT6761, **32-bit** armeabi-v7a",
               "**0.85 GB**",
@@ -301,6 +301,72 @@
         },
         "Switch the radio on, press **Ping all**, and look for `PING … ->` and `ACK from …: message delivered` in the log. The `LINKSTATS` line, printed every 30 seconds, has the connection counts used above.",
         "*NodeWave is free software (AGPL-3.0-or-later), works without internet, without Google Play Services and without an account.*"
+      ]
+    },
+    {
+      "id": "lora-modules-arrived",
+      "date": "2026-11-16",
+      "title": "Hardware on the Workbench: The First LoRa 868 MHz Modules Have Arrived!",
+      "body": [
+        "The wait is officially over! The courier just dropped off the package we have been eagerly anticipating, and our workbench is now covered in antennas, USB-C OTG cables, and sub-GHz radio transceivers. We have officially received our first batch of dedicated LoRa hardware to begin hands-on development and real-world testing of the **LoRa transport layer** inside the NodeWave connection stack!",
+        "In our previous bench test—where we linked five very different Android phones in the same room—we proved that our core protocol, zero-server discovery, QR-Trust cryptographic handshakes, and multi-hop relaying work reliably over standard Bluetooth Low Energy (BLE). However, Bluetooth has a hard physical limit: once teams spread out beyond a few dozen meters in the field, local clusters become isolated islands.",
+        "Today marks the moment we break that short-range barrier and start pushing NodeWave into multi-kilometer territory.",
+        {
+          "img": "assets/images/posts/lora-hw.jpg",
+          "alt": "LoRa modules Waveshare and WiFi LoRa 32 V4"
+        },
+        {
+          "heading": "What Just Landed on the Desk"
+        },
+        "To test both handheld operator setups and autonomous relay scenarios right out of the gate, we assembled a versatile 868 MHz hardware kit based on the modern **Semtech SX1262** radio transceiver:",
+        {
+          "list": [
+            "**Two Waveshare USB-TO-LoRa-HF Dongles (plus flexible USB-C OTG cables):** Housed in a rugged sandblasted aluminum enclosure with external SMA antennas, these modules combine an SX1262 radio chip ($+22\\text{ dBm}$ TX power, operating in the $868\\text{ MHz}$ European ISM band) with an onboard RP2040 controller and USB-UART bridge. Plugged directly into our test smartphones (such as our Xiaomi Mi Note 10, Honor View 10, and Samsung Galaxy A52) via short, flexible OTG cables, they transform standard Android devices into long-range tactical communicators.",
+            "**One Meshnology ESP32 LoRa V4 Development Board ($3000\\text{ mAh}$):** Built around an ESP32-S3 dual-core MCU, an SX1262 transceiver, an OLED status display, and an integrated **Quectel L76 GNSS** receiver, all powered by a $3000\\text{ mAh}$ lithium battery. This unit will serve as our standalone *Store & Forward* hilltop repeater and autonomous GPS beacon node."
+          ]
+        },
+        "---",
+        {
+          "heading": "Plugging LoRa into the NodeWave Connection Stack"
+        },
+        "One of the design decisions we are most proud of in NodeWave is how the radio stack is architected. From day one, we isolated all physical communication behind a clean, reactive Kotlin interface: `MeshTransport`.",
+        "Because of this modularity, the upper layers of NodeWave do not need to care *how* a packet travels through the air:",
+        {
+          "list": [
+            "The **Jetpack Compose tactical UI** remains completely unchanged.",
+            "Our **QR-Trust end-to-end encryption** and session handshakes work identically.",
+            "**Multi-hop routing** and persistent *Store & Forward* offline queues operate seamlessly across transports.",
+            "**Codec2 Voice Bursts** ($1200\\text{ bps}$ ultra-compressed audio that packs a 4-second voice message into roughly $600\\text{ bytes}$) can now be injected directly into a narrowband sub-GHz radio link."
+          ]
+        },
+        {
+          "heading": "What We Are Coding Right Now"
+        },
+        "With the hardware physically plugged into our phones, our immediate focus is building and refining the new USB Serial transport implementation (`WaveshareSerialTransport.kt`):",
+        {
+          "list": [
+            "**USB OTG Serial Management:** Detecting and opening the hardware UART bridge directly from Android without root permissions or proprietary drivers, maintaining a stable connection inside our foreground radio service.",
+            "**AT Command Framing & Packet Reassembly:** Configuring the SX1262 radio parameters ($868.0\\text{ MHz}$, Spreading Factor, Bandwidth, and Coding Rate) and wrapping NodeWave's encrypted binary payloads into clean serial frames, while parsing incoming hex streams and real-time RSSI/SNR metrics on the receiving end.",
+            "**Airtime & Duty-Cycle Discipline:** Unlike Bluetooth or Wi-Fi, LoRa requires strict respect for channel airtime and regional $868\\text{ MHz}$ duty-cycle limits. We are tuning our packet pacing, ACK timeouts, and smart-flooding timers specifically for sub-GHz propagation."
+          ]
+        },
+        "---",
+        {
+          "heading": "First Bench Tests & Next Steps"
+        },
+        "Before heading out to the trails and hills for kilometer-scale line-of-sight tests, here is our immediate checklist on the workbench:",
+        {
+          "list": [
+            "**Serial Handshake & Radio Config:** Verify USB OTG enumeration across our Android 10, 11, and 14 test devices and lock in matching RF parameters across both Waveshare dongles.",
+            "**The First Sub-GHz Ping:** Turn Bluetooth completely **OFF** on two phones, plug in the LoRa dongles, press **Ping all**, and watch the very first encrypted `CIAO - 73` packet and its `ACK` fly across the $868\\text{ MHz}$ spectrum in `adb logcat -s MESH_RADIO`.",
+            "**Voice Burst & Telemetry Trials:** Measure real-world airtime and round-trip latency when transmitting GPS coordinates, Morse alerts, and $600\\text{-byte}$ Codec2 voice messages.",
+            "**Autonomous Relay Integration:** Configure the Meshnology ESP32-S3 V4 board to listen on the exact same LoRa parameters and bounce packets between out-of-range handheld nodes."
+          ]
+        },
+        "We could not be more excited to see the LEDs blinking on these boards and watch our Android phones talk over real long-range radio hardware for the first time.",
+        "Stay tuned—we will be sharing our raw `LINKSTATS`, round-trip numbers, and field test logs very soon. If you are experimenting with SX1262 dongles, ESP32 LoRa nodes, or custom $868\\text{ MHz}$ antennas, jump into the forum and let us know what setup you are running!",
+        "**CIAO - 73!**",
+        "*NodeWave is free and open-source software (AGPL-3.0-or-later), built 100% in Kotlin with zero Google Play Services, zero servers, and zero internet dependencies.*"
       ]
     }
   ]
